@@ -18,7 +18,7 @@ cd cpds-detector
 make
 ```
 
-编译完成后的`cpds-detector`在`bin`目录中
+编译完成后的`cpds-detector`在`out`目录中
 
 #### 参与贡献
 
