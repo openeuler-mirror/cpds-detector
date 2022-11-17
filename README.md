@@ -1,23 +1,24 @@
 # cpds-detector
 
 #### 介绍
-Detect exceptions for Container Problem Detect System
+cpds-detector是为CPDS(Container Problem Detect System)容器故障检测系统开发的异常检测组件
 
-#### 软件架构
-软件架构说明
+本组件根据cpds-analyzer(容器故障/亚健康诊断组件)下发的异常规则，对集群各节点原始数据进行分析，检测节点是否存在异常
 
+#### 从源码编译
 
-#### 安装教程
+`cpds-detector`只支持 Linux，必须使用 Go 版本 1.18 或更高版本构建。
 
-1.  xxxx
-2.  xxxx
-3.  xxxx
+```bash
+# create a 'gitee.com/cpds' in your GOPATH/src
+cd $GOPATH/gitee.com/cpds
+git clone https://gitee.com/openeuler/cpds-detector.git
+cd cpds-detector
 
-#### 使用说明
+make
+```
 
-1.  xxxx
-2.  xxxx
-3.  xxxx
+编译完成后的`cpds-detector`在`bin`目录中
 
 #### 参与贡献
 
@@ -26,12 +27,3 @@ Detect exceptions for Container Problem Detect System
 3.  提交代码
 4.  新建 Pull Request
 
-
-#### 特技
-
-1.  使用 Readme\_XXX.md 来支持不同的语言，例如 Readme\_en.md, Readme\_zh.md
-2.  Gitee 官方博客 [blog.gitee.com](https://blog.gitee.com)
-3.  你可以 [https://gitee.com/explore](https://gitee.com/explore) 这个地址来了解 Gitee 上的优秀开源项目
-4.  [GVP](https://gitee.com/gvp) 全称是 Gitee 最有价值开源项目，是综合评定出的优秀开源项目
-5.  Gitee 官方提供的使用手册 [https://gitee.com/help](https://gitee.com/help)
-6.  Gitee 封面人物是一档用来展示 Gitee 会员风采的栏目 [https://gitee.com/gitee-stars/](https://gitee.com/gitee-stars/)
