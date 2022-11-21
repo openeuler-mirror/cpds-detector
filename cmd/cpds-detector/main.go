@@ -3,12 +3,14 @@ package main
 import (
 	"os"
 
+	"gitee.com/cpds/cpds-detector/config"
 	"gitee.com/cpds/cpds-detector/detector"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 )
 
-func newAnalyzer() (*cobra.Command, error) {
+func newDetector() (*cobra.Command, error) {
+	opts := config.NewOptions()
 	cmd := &cobra.Command{
 		Use:                   "cpds-detector [OPTIONS]",
 		Short:                 "Detect exceptions for Container Problem Detect System",
@@ -18,9 +20,12 @@ func newAnalyzer() (*cobra.Command, error) {
 		DisableFlagsInUseLine: true,
 		Args:                  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			return detector.RunDetector()
+			return detector.RunDetector(opts)
 		},
 	}
+	flags := cmd.Flags()
+	flags.BoolP("version", "v", false, "Print version information and quit")
+	opts.InstallFlags(flags)
 
 	return cmd, nil
 }
@@ -36,10 +41,10 @@ func initLogging() {
 func main() {
 	initLogging()
 
-	cmd, err := newAnalyzer()
+	cmd, err := newDetector()
 	if err != nil {
 		logrus.Error(err)
-		// if cannot create new Analyzer, just exit
+		// if cannot create new Detector, just exit
 		os.Exit(1)
 	}
 	if err := cmd.Execute(); err != nil {
