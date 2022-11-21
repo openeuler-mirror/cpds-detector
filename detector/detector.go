@@ -20,6 +20,7 @@ func RunDetector(opts *config.Options) error {
 
 	logrus.Infof("Starting cpds-detector......")
 	logrus.Infof("Using config: database address: %s, database port: %s", opts.DatabaseAddress, opts.DatabasePort)
+	logrus.Infof("Using config: bind address: %s, listening port: %s", opts.BindAddress, opts.Port)
 	// TODO: complete this function
 	return nil
 }
