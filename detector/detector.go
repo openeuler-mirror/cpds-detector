@@ -8,7 +8,7 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-func RunDetector(opts *config.Options) error {
+func RunDetector(opts *config.Config) error {
 	if err := configureLogLevel(opts); err != nil {
 		return err
 	}
@@ -45,7 +45,7 @@ func isDebugEnabled() bool {
 }
 
 // configureLogLevel "debug"|"info"|"warn"|"error"|"fatal", default: "info"
-func configureLogLevel(opts *config.Options) error {
+func configureLogLevel(opts *config.Config) error {
 	if opts.LogLevel != "" {
 		lvl, err := logrus.ParseLevel(opts.LogLevel)
 		if err != nil {
