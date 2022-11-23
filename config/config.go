@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/sirupsen/logrus"
+	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
 )
@@ -23,6 +24,7 @@ type Config struct {
 	DatabasePassword string
 	BindAddress      string
 	Port             string
+	ConfigPath       string
 }
 
 func New() *Config {
@@ -30,20 +32,23 @@ func New() *Config {
 }
 
 func (c *Config) LoadConfig(flags *pflag.FlagSet) {
-	c.installFlags()
-	c.parseConfigFile(flags)
+	cobra.OnInitialize(func() {
+		viper.SetConfigType(defaultConfigType)
+		viper.SetConfigName(defaultConfigName)
+		if c.ConfigPath != defaultConfigPath {
+			// Use config file from the flag.
+			viper.AddConfigPath(c.ConfigPath)
+		} else {
+			viper.AddConfigPath(defaultConfigPath)
+		}
+
+		c.parseConfigFile(flags)
+	})
+	c.installFlags(flags)
 }
 
 func (c *Config) parseConfigFile(flags *pflag.FlagSet) {
-	if path, err := flags.GetString("config-path"); err != nil {
-		// using defalut config file path
-		viper.AddConfigPath(defaultConfigPath)
-	} else {
-		viper.AddConfigPath(path)
-	}
 	viper.BindPFlags(flags)
-	viper.SetConfigType(defaultConfigType)
-	viper.SetConfigName(defaultConfigName)
 
 	err := viper.ReadInConfig() // Find and read the config file
 	if err != nil {             // Handle errors reading the config file
