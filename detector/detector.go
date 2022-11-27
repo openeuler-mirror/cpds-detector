@@ -2,9 +2,11 @@ package detector
 
 import (
 	"fmt"
+	"net/http"
 	"os"
 
 	"gitee.com/cpds/cpds-detector/config"
+	restful "github.com/emicklei/go-restful"
 	"github.com/sirupsen/logrus"
 )
 
@@ -21,7 +23,17 @@ func RunDetector(opts *config.Config) error {
 	logrus.Infof("Starting cpds-detector......")
 	logrus.Infof("Using config: database address: %s, database port: %s", opts.DatabaseAddress, opts.DatabasePort)
 	logrus.Infof("Using config: bind address: %s, listening port: %s", opts.BindAddress, opts.Port)
-	// TODO: complete this function
+
+	ws := new(restful.WebService)
+	restful.Add(ws)
+	server := &http.Server{
+		Addr:    ":" + opts.Port,
+		Handler: nil,
+	}
+	if err := server.ListenAndServe(); err != nil {
+		logrus.Infof("Start listening on https://%s:%s", opts.BindAddress, opts.Port)
+	}
+	defer server.Close()
 	return nil
 }
 
