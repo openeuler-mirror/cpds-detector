@@ -6,6 +6,7 @@ import (
 	"os"
 
 	"gitee.com/cpds/cpds-detector/config"
+	"gitee.com/cpds/cpds-detector/pkgs/rules"
 	restful "github.com/emicklei/go-restful"
 	"github.com/sirupsen/logrus"
 )
@@ -24,16 +25,22 @@ func RunDetector(opts *config.Config) error {
 	logrus.Infof("Using config: database address: %s, database port: %s", opts.DatabaseAddress, opts.DatabasePort)
 	logrus.Infof("Using config: bind address: %s, listening port: %s", opts.BindAddress, opts.Port)
 
-	ws := new(restful.WebService)
-	restful.Add(ws)
+	wsContainer := restful.NewContainer()
+	r := rules.GetRules()
+	r.RegisterTo(wsContainer)
+
+	// Add container filter to respond to OPTIONS
+	wsContainer.Filter(wsContainer.OPTIONSFilter)
+
 	server := &http.Server{
 		Addr:    ":" + opts.Port,
-		Handler: nil,
+		Handler: wsContainer,
 	}
 	if err := server.ListenAndServe(); err != nil {
-		logrus.Infof("Start listening on https://%s:%s", opts.BindAddress, opts.Port)
+		logrus.Infof("Failed to listen https://%s:%s: %w", opts.BindAddress, opts.Port, err)
 	}
 	defer server.Close()
+
 	return nil
 }
 
