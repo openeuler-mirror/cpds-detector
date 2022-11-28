@@ -6,8 +6,10 @@ import (
 	"os"
 
 	"gitee.com/cpds/cpds-detector/config"
+	rulesv1 "gitee.com/cpds/cpds-detector/pkgs/apis/rules/v1"
 	"gitee.com/cpds/cpds-detector/pkgs/rules"
 	restful "github.com/emicklei/go-restful"
+
 	"github.com/sirupsen/logrus"
 )
 
@@ -26,8 +28,7 @@ func RunDetector(opts *config.Config) error {
 	logrus.Infof("Using config: bind address: %s, listening port: %s", opts.BindAddress, opts.Port)
 
 	wsContainer := restful.NewContainer()
-	r := rules.GetRules()
-	r.RegisterTo(wsContainer)
+	installAPIs(wsContainer)
 
 	// Add container filter to respond to OPTIONS
 	wsContainer.Filter(wsContainer.OPTIONSFilter)
@@ -77,4 +78,9 @@ func configureLogLevel(opts *config.Config) error {
 		logrus.SetLevel(logrus.InfoLevel)
 	}
 	return nil
+}
+
+func installAPIs(c *restful.Container) {
+	r := rules.New()
+	rulesv1.AddToContainer(c, r)
 }
