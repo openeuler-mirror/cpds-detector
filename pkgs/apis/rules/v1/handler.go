@@ -21,6 +21,9 @@ func newRulesHandler(r *rules.Rules) *Handler {
 
 func (h *Handler) GetRules(req *restful.Request, resp *restful.Response) {
 	path := req.QueryParameter("path")
+	if path == "" {
+		path = h.rules.GetDefaultRulesPath()
+	}
 
 	if err := h.rules.LoadRules(path); err != nil {
 		logrus.Error(err)
