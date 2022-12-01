@@ -33,11 +33,13 @@ func RunDetector(opts *config.Config) error {
 	// Add container filter to respond to OPTIONS
 	wsContainer.Filter(wsContainer.OPTIONSFilter)
 
+	certPath, keyPath := config.GetCertPath(), config.GetKeyPath()
+	// TODO: make certificate and key file by openssl instead of using certificate template
 	server := &http.Server{
 		Addr:    ":" + opts.Port,
 		Handler: wsContainer,
 	}
-	if err := server.ListenAndServe(); err != nil {
+	if err := server.ListenAndServeTLS(certPath, keyPath); err != nil {
 		logrus.Infof("Failed to listen https://%s:%s: %w", opts.BindAddress, opts.Port, err)
 	}
 	defer server.Close()
