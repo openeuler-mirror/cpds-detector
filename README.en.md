@@ -1,22 +1,26 @@
 # cpds-detector
 
 #### Description
-Detect exceptions for Container Problem Detect System
 
-#### Software Architecture
-Software architecture description
+cpds-detector is an anomaly detection component developed for the CPDS (Container Problem Detect System) container fault detection system.
 
-#### Installation
+This component analyzes the raw data of each node in the cluster according to the exception rules issued by cpds-analyzer (container fault/sub-health diagnosis component), and detects whether there is an exception in the node.
 
-1.  xxxx
-2.  xxxx
-3.  xxxx
 
-#### Instructions
+#### Build from source
 
-1.  xxxx
-2.  xxxx
-3.  xxxx
+`cpds-detector` is only supported on Linux and must be built with Go version 1.18 or higher.
+
+```bash
+# create a 'gitee.com/cpds' in your GOPATH/src
+cd $GOPATH/gitee.com/cpds
+git clone https://gitee.com/openeuler/cpds-detector.git
+cd cpds-detector
+
+make
+```
+Finally, the compiled `cpds-detector` is in the `out` directory.
+
 
 #### Contribution
 
@@ -24,13 +28,3 @@ Software architecture description
 2.  Create Feat_xxx branch
 3.  Commit your code
 4.  Create Pull Request
-
-
-#### Gitee Feature
-
-1.  You can use Readme\_XXX.md to support different languages, such as Readme\_en.md, Readme\_zh.md
-2.  Gitee blog [blog.gitee.com](https://blog.gitee.com)
-3.  Explore open source project [https://gitee.com/explore](https://gitee.com/explore)
-4.  The most valuable open source project [GVP](https://gitee.com/gvp)
-5.  The manual of Gitee [https://gitee.com/help](https://gitee.com/help)
-6.  The most popular members  [https://gitee.com/gitee-stars/](https://gitee.com/gitee-stars/)
