@@ -1,6 +1,8 @@
 package rules
 
-import "gitee.com/cpds/cpds-detector/utils"
+import (
+	"gitee.com/cpds/cpds-detector/utils"
+)
 
 type Rules struct {
 	Cpu_max    int `json:"cpu_max"`
@@ -21,6 +23,13 @@ func New() *Rules {
 
 func (r *Rules) LoadRules(path string) error {
 	if err := utils.LoadJsonFromFile(path, r); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (r *Rules) SetRules(path string) error {
+	if err := utils.SaveAsJsonFile(path, r); err != nil {
 		return err
 	}
 	return nil
