@@ -14,6 +14,10 @@ import (
 )
 
 func RunDetector(opts *config.Config) error {
+	if err := opts.CheckConfig(); err != nil {
+		return err
+	}
+
 	if err := configureLogLevel(opts); err != nil {
 		return err
 	}
