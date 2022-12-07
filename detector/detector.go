@@ -33,9 +33,7 @@ func RunDetector(opts *config.Config) error {
 
 	wsContainer := restful.NewContainer()
 	installAPIs(wsContainer)
-
-	// Add container filter to respond to OPTIONS
-	wsContainer.Filter(wsContainer.OPTIONSFilter)
+	setRestfulConf(wsContainer)
 
 	tlsconf := config.GetTlsConf()
 	server := &http.Server{
@@ -89,4 +87,13 @@ func configureLogLevel(opts *config.Config) error {
 func installAPIs(c *restful.Container) {
 	r := rules.New()
 	rulesv1.AddToContainer(c, r)
+}
+
+func setRestfulConf(c *restful.Container) {
+	// Add cross origin filter
+	cors := config.GetCors(c)
+	c.Filter(cors.Filter)
+
+	// Add container filter to respond to OPTIONS
+	c.Filter(c.OPTIONSFilter)
 }
