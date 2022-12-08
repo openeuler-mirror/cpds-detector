@@ -14,7 +14,7 @@ type Rules struct {
 }
 
 const (
-	defaultRulesPath = "/etc/cpds/rules.json"
+	defaultRulesPath = "/etc/cpds/cpds-detector/rules.json"
 )
 
 func New() *Rules {
