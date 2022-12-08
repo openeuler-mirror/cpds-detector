@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"time"
 
 	"gitee.com/cpds/cpds-detector/config"
 	rulesv1 "gitee.com/cpds/cpds-detector/pkgs/apis/rules/v1"
@@ -11,6 +12,10 @@ import (
 	restful "github.com/emicklei/go-restful"
 
 	"github.com/sirupsen/logrus"
+)
+
+var (
+	serverTimeout = 5000 * time.Millisecond
 )
 
 func RunDetector(opts *config.Config) error {
@@ -38,9 +43,10 @@ func RunDetector(opts *config.Config) error {
 
 	tlsconf := config.GetTlsConf()
 	server := &http.Server{
-		Addr:      ":" + opts.Port,
-		Handler:   wsContainer,
-		TLSConfig: tlsconf,
+		Addr:        ":" + opts.Port,
+		Handler:     wsContainer,
+		TLSConfig:   tlsconf,
+		ReadTimeout: serverTimeout,
 	}
 	if err := server.ListenAndServeTLS(opts.CertFile, opts.KeyFile); err != nil {
 		logrus.Infof("Failed to listen https://%s:%s: %w", opts.BindAddress, opts.Port, err)
