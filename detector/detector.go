@@ -34,6 +34,7 @@ func RunDetector(opts *config.Config) error {
 	wsContainer := restful.NewContainer()
 	installAPIs(wsContainer)
 	setRestfulConf(wsContainer)
+	opts.RegisterSwagger(wsContainer)
 
 	tlsconf := config.GetTlsConf()
 	server := &http.Server{
