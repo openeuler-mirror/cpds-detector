@@ -13,7 +13,7 @@ import (
 )
 
 var (
-	defaultConfigPath = "/etc/cpds/"
+	defaultConfigPath = "/etc/cpds/cpds-detector/"
 	defaultConfigName = "cpds-detector.json"
 	defaultConfigType = "json"
 )
