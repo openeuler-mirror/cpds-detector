@@ -77,7 +77,7 @@ func isDebugEnabled() bool {
 
 // configureLogLevel "debug"|"info"|"warn"|"error"|"fatal", default: "info"
 func configureLogLevel(opts *config.Config) error {
-	logrus.Debug("Configure Log Leval: %s", opts.LogLevel)
+	logrus.Debug("Configure Log Level: %s", opts.LogLevel)
 	if opts.LogLevel != "" {
 		lvl, err := logrus.ParseLevel(opts.LogLevel)
 		if err != nil {
