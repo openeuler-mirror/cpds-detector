@@ -77,6 +77,7 @@ func isDebugEnabled() bool {
 
 // configureLogLevel "debug"|"info"|"warn"|"error"|"fatal", default: "info"
 func configureLogLevel(opts *config.Config) error {
+	logrus.Debug("Configure Log Leval: %s", opts.LogLevel)
 	if opts.LogLevel != "" {
 		lvl, err := logrus.ParseLevel(opts.LogLevel)
 		if err != nil {
@@ -92,11 +93,13 @@ func configureLogLevel(opts *config.Config) error {
 }
 
 func installAPIs(c *restful.Container) {
+	logrus.Debug("Installing APIs")
 	r := rules.New()
 	rulesv1.AddToContainer(c, r)
 }
 
 func setRestfulConf(c *restful.Container) {
+	logrus.Debug("Setting restful configuration")
 	// Add cross origin filter
 	cors := config.GetCors(c)
 	c.Filter(cors.Filter)
