@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"gitee.com/cpds/cpds-detector/config"
+	commonv1 "gitee.com/cpds/cpds-detector/pkgs/apis/common/v1"
 	rulesv1 "gitee.com/cpds/cpds-detector/pkgs/apis/rules/v1"
 	"gitee.com/cpds/cpds-detector/pkgs/rules"
 	restful "github.com/emicklei/go-restful"
@@ -96,6 +97,7 @@ func installAPIs(c *restful.Container) {
 	logrus.Debug("Installing APIs")
 	r := rules.New()
 	rulesv1.AddToContainer(c, r)
+	commonv1.AddToContainer(c)
 }
 
 func setRestfulConf(c *restful.Container) {
