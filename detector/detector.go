@@ -19,7 +19,15 @@ var (
 	serverTimeout = 5000 * time.Millisecond
 )
 
-func RunDetector(opts *config.Config) error {
+type Detector struct {
+	*config.Config
+}
+
+func NewDetector() *Detector {
+	return &Detector{}
+}
+
+func (d *Detector) Run(opts *config.Config) error {
 	if err := opts.CheckConfig(); err != nil {
 		return err
 	}
