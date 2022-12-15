@@ -3,10 +3,10 @@ package detector
 import (
 	"fmt"
 	"net/http"
-	"os"
 	"time"
 
 	"gitee.com/cpds/cpds-detector/config"
+	"gitee.com/cpds/cpds-detector/detector/debug"
 	commonv1 "gitee.com/cpds/cpds-detector/pkgs/apis/common/v1"
 	rulesv1 "gitee.com/cpds/cpds-detector/pkgs/apis/rules/v1"
 	"gitee.com/cpds/cpds-detector/pkgs/rules"
@@ -37,7 +37,7 @@ func (d *Detector) Run(opts *config.Config) error {
 	}
 
 	if opts.Debug {
-		enableDebug()
+		debug.Enable()
 		logrus.Debugf("Enable debug mode")
 	}
 
@@ -63,25 +63,6 @@ func (d *Detector) Run(opts *config.Config) error {
 	defer server.Close()
 
 	return nil
-}
-
-// enableDebug sets the DEBUG env var to true
-// and makes the logger to log at debug level.
-func enableDebug() {
-	os.Setenv("DEBUG", "1")
-	logrus.SetLevel(logrus.DebugLevel)
-}
-
-// disableDebug sets the DEBUG env var to false
-// and makes the logger to log at info level.
-func disableDebug() {
-	os.Setenv("DEBUG", "")
-	logrus.SetLevel(logrus.InfoLevel)
-}
-
-// isDebugEnabled checks whether the debug flag is set or not.
-func isDebugEnabled() bool {
-	return os.Getenv("DEBUG") != ""
 }
 
 // configureLogLevel "debug"|"info"|"warn"|"error"|"fatal", default: "info"
