@@ -1,4 +1,7 @@
 # cpds-detector
+<p align="center">
+<a href="https://gitee.com/openeuler/Cpds"><img src="docs/images/cpds-icon.png" alt="banner" width="250px"></a>
+</p>
 
 #### 介绍
 cpds-detector是为CPDS(Container Problem Detect System)容器故障检测系统开发的异常检测组件
