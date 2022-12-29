@@ -1,4 +1,8 @@
 # cpds-detector
+<p align="center">
+<a href="https://gitee.com/openeuler/Cpds"><img src="docs/images/cpds-icon.png" alt="banner" width="250px"></a>
+</p>
+
 
 #### Description
 
