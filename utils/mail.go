@@ -20,3 +20,14 @@ func NewMailSender(host string, port int, userName string, password string, from
 		sendCloser: s,
 	}, nil
 }
+
+func (m *Mail) Send(name string, address string, subject string, message string) error {
+	msg := gomail.NewMessage()
+
+	msg.SetHeader("From", "no-reply@linx-info.com")
+	msg.SetAddressHeader("To", address, name)
+	msg.SetHeader("Subject", subject)
+	msg.SetBody("text/html", message)
+
+	return gomail.Send(m.sendCloser, msg)
+}
