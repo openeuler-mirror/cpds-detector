@@ -50,6 +50,7 @@ func (d *Detector) Run(opts *config.Config) error {
 	installAPIs(wsContainer)
 	logrus.Debug("install apis")
 	setRestfulConf(wsContainer)
+	logrus.Debug("set restful configuration")
 	opts.RegisterSwagger(wsContainer)
 
 	tlsconf := config.GetTlsConf()
