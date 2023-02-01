@@ -35,6 +35,10 @@ func GetMean(nums ...float64) (float64, error) {
 
 // Variance: s^2 = ((x1 - m)^2 + (x2 - m)^2 + ... + (xn - m)^2) / n
 func GetVariance(nums ...float64) (float64, error) {
+	if len(nums) == 0 {
+		return -1, fmt.Errorf("invalid argument: array cannot be empty")
+	}
+
 	e := fmt.Sprintf("(%s) / n", func(nums ...float64) (s string) {
 		for index := range nums {
 			if index == 0 {
@@ -70,6 +74,10 @@ func GetVariance(nums ...float64) (float64, error) {
 }
 
 func GetStandardDeviation(nums ...float64) (float64, error) {
+	if len(nums) == 0 {
+		return -1, fmt.Errorf("invalid argument: array cannot be empty")
+	}
+
 	e := "[variance] ** 0.5"
 	expr, err := govaluate.NewEvaluableExpression(e)
 	if err != nil {
@@ -103,7 +111,7 @@ func GetMaxValue(nums ...float64) (float64, error) {
 
 func GetMinValue(nums ...float64) (float64, error) {
 	if n := len(nums); n == 0 {
-		return -1, fmt.Errorf("invalid argument: array cannot be empty")
+		return math.NaN(), fmt.Errorf("invalid argument: array cannot be empty")
 	}
 
 	min := nums[0]
