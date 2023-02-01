@@ -48,6 +48,7 @@ func (d *Detector) Run(opts *config.Config) error {
 	wsContainer := restful.NewContainer()
 	logrus.Debug("creating new container")
 	installAPIs(wsContainer)
+	logrus.Debug("install apis")
 	setRestfulConf(wsContainer)
 	opts.RegisterSwagger(wsContainer)
 
