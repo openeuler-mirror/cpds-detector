@@ -67,7 +67,7 @@ func (d *Detector) Run(opts *config.Config) error {
 
 // configureLogLevel "debug"|"info"|"warn"|"error"|"fatal", default: "info"
 func configureLogLevel(opts *config.Config) error {
-	logrus.Debug("Configure Log Level: %s", opts.LogLevel)
+	logrus.Debug("configure Log Level: %s", opts.LogLevel)
 	if opts.LogLevel != "" {
 		lvl, err := logrus.ParseLevel(opts.LogLevel)
 		if err != nil {
