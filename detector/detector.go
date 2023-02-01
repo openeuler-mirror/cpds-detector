@@ -38,12 +38,12 @@ func (d *Detector) Run(opts *config.Config) error {
 
 	if opts.Debug {
 		debug.Enable()
-		logrus.Debugf("Enable debug mode")
+		logrus.Debugf("enable debug mode")
 	}
 
-	logrus.Infof("Starting cpds-detector......")
-	logrus.Infof("Using config: database address: %s, database port: %s", opts.DatabaseAddress, opts.DatabasePort)
-	logrus.Infof("Using config: bind address: %s, listening port: %s", opts.BindAddress, opts.Port)
+	logrus.Infof("starting cpds-detector......")
+	logrus.Infof("using config: database address: %s, database port: %s", opts.DatabaseAddress, opts.DatabasePort)
+	logrus.Infof("using config: bind address: %s, listening port: %s", opts.BindAddress, opts.Port)
 
 	wsContainer := restful.NewContainer()
 	installAPIs(wsContainer)
@@ -58,7 +58,7 @@ func (d *Detector) Run(opts *config.Config) error {
 		ReadTimeout: serverTimeout,
 	}
 	if err := server.ListenAndServeTLS(opts.CertFile, opts.KeyFile); err != nil {
-		logrus.Infof("Failed to listen https://%s:%s: %w", opts.BindAddress, opts.Port, err)
+		logrus.Infof("failed to listen https://%s:%s: %w", opts.BindAddress, opts.Port, err)
 	}
 	defer server.Close()
 
@@ -67,7 +67,7 @@ func (d *Detector) Run(opts *config.Config) error {
 
 // configureLogLevel "debug"|"info"|"warn"|"error"|"fatal", default: "info"
 func configureLogLevel(opts *config.Config) error {
-	logrus.Debug("Configure Log Level: %s", opts.LogLevel)
+	logrus.Debug("configure Log Level: %s", opts.LogLevel)
 	if opts.LogLevel != "" {
 		lvl, err := logrus.ParseLevel(opts.LogLevel)
 		if err != nil {
@@ -83,14 +83,14 @@ func configureLogLevel(opts *config.Config) error {
 }
 
 func installAPIs(c *restful.Container) {
-	logrus.Debug("Installing APIs")
+	logrus.Debug("installing APIs")
 	r := rules.New()
 	rulesv1.AddToContainer(c, r)
 	commonv1.AddToContainer(c)
 }
 
 func setRestfulConf(c *restful.Container) {
-	logrus.Debug("Setting restful configuration")
+	logrus.Debug("setting restful configuration")
 	// Add cross origin filter
 	cors := config.GetCors(c)
 	c.Filter(cors.Filter)
