@@ -38,7 +38,7 @@ func (d *Detector) Run(opts *config.Config) error {
 
 	if opts.Debug {
 		debug.Enable()
-		logrus.Debugf("Enable debug mode")
+		logrus.Debugf("enable debug mode")
 	}
 
 	logrus.Infof("Starting cpds-detector......")
