@@ -83,7 +83,7 @@ func configureLogLevel(opts *config.Config) error {
 }
 
 func installAPIs(c *restful.Container) {
-	logrus.Debug("Installing APIs")
+	logrus.Debug("installing APIs")
 	r := rules.New()
 	rulesv1.AddToContainer(c, r)
 	commonv1.AddToContainer(c)
