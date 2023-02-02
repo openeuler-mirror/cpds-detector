@@ -30,3 +30,19 @@ func DuplicateIntArray(m []int) []int {
 	}
 	return s
 }
+
+func GetDifferentIntArray(sourceList, sourceList2 []int) (result []int) {
+	for _, src := range sourceList {
+		var find bool
+		for _, target := range sourceList2 {
+			if src == target {
+				find = true
+				continue
+			}
+		}
+		if !find {
+			result = append(result, src)
+		}
+	}
+	return
+}
