@@ -185,3 +185,7 @@ func ParseTimeToTimeStr(intTime int64, strfmt ...string) string {
 	}
 	return t.Format(defaultFmt)
 }
+
+func NowUnix() int64 {
+	return time.Now().Unix()
+}
