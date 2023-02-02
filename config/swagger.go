@@ -9,9 +9,7 @@ import (
 )
 
 const (
-	apiPath         = "/apidocs"
-	swaggerPath     = "/swagger/"
-	swaggerFilePath = "config/swagger-ui/dist"
+	apiPath = "/apidocs"
 )
 
 func (c *Config) RegisterSwagger(container *restful.Container) {
@@ -20,10 +18,6 @@ func (c *Config) RegisterSwagger(container *restful.Container) {
 		WebServices:    container.RegisteredWebServices(),
 		WebServicesUrl: fmt.Sprintf("http://%s:%s", c.BindAddress, c.Port),
 		ApiPath:        apiPath,
-
-		// Optionally, specify where the UI is located
-		SwaggerPath:     swaggerPath,
-		SwaggerFilePath: swaggerFilePath,
 	}
 	swagger.RegisterSwaggerService(config, container)
 }

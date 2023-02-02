@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strconv"
 
+	"github.com/sirupsen/logrus"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/schema"
@@ -27,6 +28,11 @@ const (
 )
 
 func NewDB(dbAddr string, dbPort int, dbUser string, dbPasswd string) *Mariadb {
+	logrus.Debugf("Database Address: %s", dbAddr)
+	logrus.Debugf("Database Port: %d", dbPort)
+	logrus.Debugf("Database User: %s", dbUser)
+	logrus.Debugf("Database password: %s", dbPasswd)
+	logrus.Debugf("Database name: %s", defaultDatabaseName)
 	c := &Config{
 		DatabaseAddress:  dbAddr,
 		DatabasePort:     strconv.Itoa(dbPort),
@@ -47,6 +53,12 @@ func (m *Mariadb) Connect() error {
 		m.conf.DatabasePort,
 		m.conf.DatabaseName,
 	)
+	logrus.Debugf("connect database with database user: %s", m.conf.DatabaseUser)
+	logrus.Debugf("connect database with database password: %s", m.conf.DatabasePassword)
+	logrus.Debugf("connect database with database address: %s", m.conf.DatabaseAddress)
+	logrus.Debugf("connect database with database port: %s", m.conf.DatabasePort)
+	logrus.Debugf("connect database with database name: %s", m.conf.DatabaseName)
+	logrus.Infof("connect database with database dsn: %s", dsn)
 
 	mysqlConfig := mysql.Config{
 		DSN:                       dsn,
@@ -77,6 +89,7 @@ func (m *Mariadb) Connect() error {
 }
 
 func (m *Mariadb) InitDBTables(db *gorm.DB, table interface{}) error {
+	logrus.Infof("initialize database tables")
 	if err := db.AutoMigrate(&table); err != nil {
 		return err
 	}

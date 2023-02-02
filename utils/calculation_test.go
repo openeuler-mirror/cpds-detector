@@ -11,7 +11,7 @@ func TestGetSum(t *testing.T) {
 	arr := make([]float64, 0)
 	sum, err := GetSum(arr...)
 
-	assert.Equal(t, sum, float64(-1))
+	assert.Equal(t, math.IsNaN(sum), true)
 	assert.Error(t, err, "invalid argument: array cannot be empty")
 
 	arr = append(arr, 1.1, 2.2, 3.3, 4.4, 5.5)
@@ -25,7 +25,7 @@ func TestGetMean(t *testing.T) {
 	arr := make([]float64, 0)
 	m, err := GetMean(arr...)
 
-	assert.Equal(t, m, float64(-1))
+	assert.Equal(t, math.IsNaN(m), true)
 	assert.Error(t, err, "invalid argument: array cannot be empty")
 
 	arr = append(arr, 1.1, 2.2, 3.3, 4.4, 5.5)
@@ -43,6 +43,11 @@ func TestGetMean(t *testing.T) {
 
 func TestGetVariance(t *testing.T) {
 	arr := make([]float64, 0)
+	v, err := GetVariance(arr...)
+
+	assert.Equal(t, math.IsNaN(v), true)
+	assert.Error(t, err, "invalid argument: array cannot be empty")
+
 	arr = append(arr, 1.1, 2.2, 3.3, 4.4, 5.5)
 
 	var m, sum float64
@@ -60,6 +65,11 @@ func TestGetVariance(t *testing.T) {
 
 func TestGetStandardDeviation(t *testing.T) {
 	arr := make([]float64, 0)
+	v, err := GetVariance(arr...)
+
+	assert.Equal(t, math.IsNaN(v), true)
+	assert.Error(t, err, "invalid argument: array cannot be empty")
+
 	arr = append(arr, 1.1, 2.2, 3.3, 4.4, 5.5)
 
 	var m, sum float64
@@ -78,6 +88,8 @@ func TestGetStandardDeviation(t *testing.T) {
 func TestGetMaxValue(t *testing.T) {
 	arr := make([]float64, 0)
 	max, err := GetMaxValue(arr...)
+
+	assert.Equal(t, math.IsNaN(max), true)
 	assert.Error(t, err, "invalid argument: array cannot be empty")
 
 	arr = append(arr, 1.1, 2.2, 5.5, 4.4, 3.3)
@@ -89,6 +101,8 @@ func TestGetMaxValue(t *testing.T) {
 func TestGetMinValue(t *testing.T) {
 	arr := make([]float64, 0)
 	min, err := GetMaxValue(arr...)
+
+	assert.Equal(t, math.IsNaN(min), true)
 	assert.Error(t, err, "invalid argument: array cannot be empty")
 
 	arr = append(arr, 1.1, 2.2, 5.5, 4.4, 3.3)

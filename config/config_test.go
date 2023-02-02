@@ -32,10 +32,19 @@ func TestLoadConfig(t *testing.T) {
 	flags := pflag.NewFlagSet("testing", pflag.ContinueOnError)
 
 	flags.Parse([]string{
-		"--config-path=config/json/cpds-detector.json",
+		"--config=config/json/cpds-detector.json",
 	})
 	conf.LoadConfig(flags)
 
 	assert.Check(t, is.Equal(conf.DatabaseUser, "root"))
 	assert.Check(t, is.Equal(conf.Port, "19081"))
+	assert.Equal(t, conf.Debug, false)
+	assert.Equal(t, conf.LogLevel, "info")
+	assert.Equal(t, conf.DatabaseAddress, "localhost")
+	assert.Equal(t, conf.DatabasePort, "3306")
+	assert.Equal(t, conf.DatabaseUser, "root")
+	assert.Equal(t, conf.DatabasePassword, "root")
+	assert.Equal(t, conf.BindAddress, "0.0.0.0")
+	assert.Equal(t, conf.CertFile, "/etc/cpds/cpds-detector/ca/cert.pem")
+	assert.Equal(t, conf.KeyFile, "/etc/cpds/cpds-detector/ca/key.pem")
 }

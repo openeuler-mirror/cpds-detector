@@ -10,6 +10,11 @@ type Mail struct {
 }
 
 func NewMailSender(host string, port int, userName string, password string) (*Mail, error) {
+	logrus.Debug("create new mail sender")
+	logrus.Debugf("create new mail sender with host: %s", host)
+	logrus.Debugf("create new mail sender with port: %s", port)
+	logrus.Debugf("create new mail sender with user name: %s", userName)
+	logrus.Debugf("create new mail sender with password: %s", password)
 	d := gomail.NewDialer(host, port, userName, password)
 	s, err := d.Dial()
 	if err != nil {
@@ -28,6 +33,10 @@ func (m *Mail) Send(name, address, subject, message string) error {
 	msg.SetAddressHeader("To", address, name)
 	msg.SetHeader("Subject", subject)
 	msg.SetBody("text/html", message)
+
+	logrus.Infof("send email to %s", address)
+	logrus.Debugf("subject: %s", subject)
+	logrus.Debugf("message: %s", message)
 
 	return gomail.Send(m.sendCloser, msg)
 }
