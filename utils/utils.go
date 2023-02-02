@@ -209,3 +209,7 @@ func FromTimestamp(timestamp int64) time.Time {
 func FormatTime(time time.Time, layout string) string {
 	return time.Format(layout)
 }
+
+func ParseTime(timeStr, layout string) (time.Time, error) {
+	return time.Parse(layout, timeStr)
+}
