@@ -42,12 +42,14 @@ func (c *Config) LoadConfig(flags *pflag.FlagSet) {
 		viper.SetConfigType(defaultConfigType)
 		logrus.Debugf("set configuration file type: %s", defaultConfigType)
 		viper.SetConfigName(defaultConfigName)
+		logrus.Debugf("set configuration file path: %s", defaultConfigPath)
 		if c.ConfigPath != defaultConfigPath {
 			// Use config file from the flag.
 			viper.AddConfigPath(c.ConfigPath)
 		} else {
 			viper.AddConfigPath(defaultConfigPath)
 		}
+		logrus.Debugf("using configuration file path: %s", c.ConfigPath)
 
 		c.parseConfigFile(flags)
 	})
