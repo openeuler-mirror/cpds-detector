@@ -46,6 +46,7 @@ func (d *Detector) Run(opts *config.Config) error {
 	logrus.Infof("using config: bind address: %s, listening port: %s", opts.BindAddress, opts.Port)
 
 	wsContainer := restful.NewContainer()
+	logrus.Debug("creating new container")
 	installAPIs(wsContainer)
 	setRestfulConf(wsContainer)
 	opts.RegisterSwagger(wsContainer)
