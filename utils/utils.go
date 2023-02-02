@@ -201,3 +201,7 @@ func Timestamp(t time.Time) int64 {
 func NowTimestamp() int64 {
 	return Timestamp(time.Now())
 }
+
+func FromTimestamp(timestamp int64) time.Time {
+	return time.Unix(0, timestamp*int64(time.Millisecond))
+}
