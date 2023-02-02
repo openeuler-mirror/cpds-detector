@@ -2,7 +2,11 @@
 package utils
 
 import (
+	"strings"
+	"time"
+
 	mapset "github.com/deckarep/golang-set"
+	"github.com/pkg/errors"
 )
 
 func MergeDuplicateIntArray(slice []int, elems []int) []int {
@@ -105,4 +109,18 @@ func DuplicateStringArray(m []string) []string {
 		}
 	}
 	return s
+}
+
+func ParseTimeByTimeStr(str, errPrefix string) (time.Time, error) {
+	p := strings.TrimSpace(str)
+	if p == "" {
+		return time.Time{}, errors.Errorf("%s cannot be empty", errPrefix)
+	}
+
+	t, err := time.ParseInLocation("2006-01-02 15:04:05", str, time.Local)
+	if err != nil {
+		return time.Time{}, errors.Errorf("%s wrong format", errPrefix)
+	}
+
+	return t, nil
 }
