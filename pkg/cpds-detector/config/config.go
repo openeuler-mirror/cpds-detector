@@ -2,9 +2,9 @@ package config
 
 import (
 	"cpds/cpds-detector/pkg/cpds-detector/config/database"
-	"cpds/cpds-detector/pkg/cpds-detector/config/detector"
 	"cpds/cpds-detector/pkg/cpds-detector/config/generic"
 	"cpds/cpds-detector/pkg/cpds-detector/config/logger"
+	"cpds/cpds-detector/pkg/cpds-detector/config/prometheus"
 	"fmt"
 	"strings"
 
@@ -21,18 +21,18 @@ const (
 
 // Config defines everything needed for cpds-detector to deal with external services
 type Config struct {
-	GenericOptions  *generic.Options  `json:"generic,omitempty" yaml:"generic,omitempty" mapstructure:"generic"`
-	DatabaseOptions *database.Options `json:"database,omitempty" yaml:"database,omitempty" mapstructure:"database"`
-	DetectorOptions *detector.Options `json:"detector,omitempty" yaml:"detector,omitempty" mapstructure:"detector"`
-	LoggerOptions   *logger.Options   `json:"log,omitempty" yaml:"log,omitempty" mapstructure:"log"`
+	GenericOptions    *generic.Options    `json:"generic,omitempty" yaml:"generic,omitempty" mapstructure:"generic"`
+	DatabaseOptions   *database.Options   `json:"database,omitempty" yaml:"database,omitempty" mapstructure:"database"`
+	PrometheusOptions *prometheus.Options `json:"prometheus,omitempty" yaml:"prometheus,omitempty" mapstructure:"prometheus"`
+	LoggerOptions     *logger.Options     `json:"log,omitempty" yaml:"log,omitempty" mapstructure:"log"`
 }
 
 func New() *Config {
 	return &Config{
-		GenericOptions:  generic.NewGenericOptions(),
-		DatabaseOptions: database.NewDatabaseOptions(),
-		DetectorOptions: detector.NewDetectorOptions(),
-		LoggerOptions:   logger.NewLoggerOptions(),
+		GenericOptions:    generic.NewGenericOptions(),
+		DatabaseOptions:   database.NewDatabaseOptions(),
+		PrometheusOptions: prometheus.NewPrometheusOptions(),
+		LoggerOptions:     logger.NewLoggerOptions(),
 	}
 }
 

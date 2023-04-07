@@ -2,6 +2,8 @@ package detector
 
 import (
 	"context"
+	"cpds/cpds-detector/internal/core"
+	dbinitiator "cpds/cpds-detector/internal/pkg/database"
 	"cpds/cpds-detector/internal/router"
 	"cpds/cpds-detector/pkg/cpds-detector/config"
 	"cpds/cpds-detector/pkg/logger"
@@ -60,12 +62,20 @@ func (s *Detector) PrepareRun() error {
 		return err
 	}
 
+	d := dbinitiator.New(s.DB)
+	if err := d.Init(); err != nil {
+		return err
+	}
+
 	return nil
 }
 
 func (s *Detector) Run() error {
-	r := router.InitRouter(s.Debug, s.Logger, s.DB)
+	if err := core.InitAnalysis(s.Config, s.Logger, s.DB); err != nil {
+		return err
+	}
 
+	r := router.InitRouter(s.Debug, s.Config, s.Logger, s.DB)
 	srv := &http.Server{
 		Addr:    fmt.Sprintf(":%d", s.Config.GenericOptions.Port),
 		Handler: r,

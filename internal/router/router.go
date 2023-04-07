@@ -3,6 +3,7 @@ package router
 import (
 	"cpds/cpds-detector/internal/handlers"
 	"cpds/cpds-detector/internal/middlewares"
+	"cpds/cpds-detector/pkg/cpds-detector/config"
 
 	gormlogger "gorm.io/gorm/logger"
 
@@ -12,11 +13,18 @@ import (
 )
 
 type resource struct {
+	config *config.Config
 	logger *zap.Logger
 	db     *gorm.DB
 }
 
-func InitRouter(debug bool, logger *zap.Logger, db *gorm.DB) *gin.Engine {
+func InitRouter(debug bool, config *config.Config, logger *zap.Logger, db *gorm.DB) *gin.Engine {
+	r := &resource{
+		config: config,
+		logger: logger,
+		db:     db,
+	}
+
 	if debug {
 		gin.SetMode(gin.DebugMode)
 	} else {
@@ -30,7 +38,9 @@ func InitRouter(debug bool, logger *zap.Logger, db *gorm.DB) *gin.Engine {
 	// test route
 	router.GET("/ping", handlers.GetPing)
 
-	router.Group("/api/v1")
+	apiv1 := router.Group("/api/v1")
+	setAnalysisRouter(apiv1, r)
+	setPrometheusRouter(apiv1, r)
 
 	return router
 }
