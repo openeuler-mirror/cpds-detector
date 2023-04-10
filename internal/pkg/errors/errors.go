@@ -7,21 +7,21 @@ const (
 	DATABASE_ERROR = 101
 	SOCKET_ERROR   = 102
 
-	RULES_GET_ERROR    = 1001
-	RULES_CREATE_ERROR = 1002
-	RULES_UPDATE_ERROR = 1003
-	RULES_DELETE_ERROR = 1004
+	ANALYSIS_RULE_UPDATED_ERROR = 1001
+
+	PROMETHEUS_QUERY_ERROR       = 2001
+	PROMETHEUS_QUERY_RANGE_ERROR = 2002
 )
 
-var AnalyzerResultCodeMap = map[uint16]string{
-	SUCCESS:        "Success",
-	DATABASE_ERROR: "Database Error",
-	SOCKET_ERROR:   "Network Error",
+var DetectorResultCodeMap = map[uint16]string{
+	SUCCESS:        "success",
+	DATABASE_ERROR: "database error",
+	SOCKET_ERROR:   "socket error",
 
-	RULES_GET_ERROR:    "Failed to get rule list",
-	RULES_CREATE_ERROR: "Failed to create rule",
-	RULES_UPDATE_ERROR: "Failed to update rule",
-	RULES_DELETE_ERROR: "Failed to delete rule",
+	ANALYSIS_RULE_UPDATED_ERROR: "rule updated error",
+
+	PROMETHEUS_QUERY_ERROR:       "prometheus query error",
+	PROMETHEUS_QUERY_RANGE_ERROR: "prometheus query range error",
 }
 
 type Error struct {
@@ -30,7 +30,7 @@ type Error struct {
 }
 
 func (e *Error) Error() string {
-	return fmt.Sprintf("%s: %s", AnalyzerResultCodeMap[e.ResultCode], e.Err.Error())
+	return fmt.Sprintf("%s: %s", DetectorResultCodeMap[e.ResultCode], e.Err.Error())
 }
 
 func NewError(resultCode uint16, err error) error {
