@@ -41,6 +41,7 @@ func InitRouter(debug bool, config *config.Config, logger *zap.Logger, db *gorm.
 	apiv1 := router.Group("/api/v1")
 	setAnalysisRouter(apiv1, r)
 	setPrometheusRouter(apiv1, r)
+	setMonitorRouter(apiv1, r)
 
 	return router
 }
