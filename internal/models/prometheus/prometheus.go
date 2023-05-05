@@ -7,8 +7,8 @@ import (
 )
 
 type Operator interface {
-	Query(expr string, timestamp int64) (*prometheus.Metric, error)
-	QueryRange(expr string, startTime, endTime int64, step time.Duration) (*prometheus.Metric, error)
+	Query(expr string, timestamp int64) (*prometheus.MetricData, error)
+	QueryRange(expr string, startTime, endTime int64, step time.Duration) (*prometheus.MetricData, error)
 }
 
 type operator struct {
@@ -29,7 +29,7 @@ func NewOperator(prometheusHost string, prometheusPort int) Operator {
 	}
 }
 
-func (o *operator) Query(expr string, timestamp int64) (*prometheus.Metric, error) {
+func (o *operator) Query(expr string, timestamp int64) (*prometheus.MetricData, error) {
 	client, err := prometheus.NewPrometheus(o.prometheusConfig.host, o.prometheusConfig.port)
 	if err != nil {
 		return nil, err
@@ -40,10 +40,10 @@ func (o *operator) Query(expr string, timestamp int64) (*prometheus.Metric, erro
 		return nil, errors.New(metric.Error)
 	}
 
-	return &metric, nil
+	return &metric.MetricData, nil
 }
 
-func (o *operator) QueryRange(expr string, startTime, endTime int64, step time.Duration) (*prometheus.Metric, error) {
+func (o *operator) QueryRange(expr string, startTime, endTime int64, step time.Duration) (*prometheus.MetricData, error) {
 	client, err := prometheus.NewPrometheus(o.prometheusConfig.host, o.prometheusConfig.port)
 	if err != nil {
 		return nil, err
@@ -54,5 +54,5 @@ func (o *operator) QueryRange(expr string, startTime, endTime int64, step time.D
 		return nil, errors.New(metric.Error)
 	}
 
-	return &metric, nil
+	return &metric.MetricData, nil
 }
