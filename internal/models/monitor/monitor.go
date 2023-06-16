@@ -126,7 +126,7 @@ func (o *operator) GetNodeStatus(instance string) ([]NodeStatus, error) {
 			exprMap["cpu_usage"] = fmt.Sprintf("1 - avg(irate(cpds_node_cpu_seconds_total{cpu!=\"cpu\",mode=\"idle\",instance=\"%s\"}[1m]))", target.Instance)
 			exprMap["memory_usage"] = fmt.Sprintf("cpds_node_memory_usage_bytes{instance=\"%s\"} / cpds_node_memory_total_bytes{instance=~\"%s\"}", target.Instance, target.Instance)
 			exprMap["memory_used_bytes"] = fmt.Sprintf("cpds_node_memory_usage_bytes{instance=\"%s\"}", target.Instance)
-			exprMap["memory_total_bytes"] = fmt.Sprintf("cpds_node_fs_total_bytes{instance=\"%s\"}", target.Instance)
+			exprMap["memory_total_bytes"] = fmt.Sprintf("cpds_node_memory_total_bytes{instance=~\"%s\"}", target.Instance)
 			exprMap["disk_usage"] = fmt.Sprintf("cpds_node_fs_usage_bytes{mount=\"/\",instance=\"%s\"} / cpds_node_fs_total_bytes{mount=\"/\",instance=\"%s\"}", target.Instance, target.Instance)
 			exprMap["disk_used_bytes"] = fmt.Sprintf("cpds_node_fs_usage_bytes{mount=\"/\",instance=\"%s\"}", target.Instance)
 			exprMap["disk_total_bytes"] = fmt.Sprintf("cpds_node_fs_total_bytes{mount=\"/\",instance=\"%s\"}", target.Instance)
