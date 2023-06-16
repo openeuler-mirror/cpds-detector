@@ -149,6 +149,8 @@ func (o *operator) GetNodeStatus(instance string) ([]NodeStatus, error) {
 						
 				case "cpu_usage":
 					ns.Cpu.Usage = metric.MetricData.MetricValues[0].Sample[1]
+				case "cpu_used_core":
+					ns.Cpu.UsedCore = metric.MetricData.MetricValues[0].Sample[1]
 				case "cpu_total_core":
 					ns.Cpu.TotalCore = metric.MetricData.MetricValues[0].Sample[1]
 				case "memory_usage":
