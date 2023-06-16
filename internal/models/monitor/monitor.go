@@ -256,7 +256,7 @@ func (o *operator) GetClusterContainerStatus(startTime time.Time, endTime time.T
 		exprMap["cluster_container_write_bytes"] = "sum (irate(cpds_container_network_transmit_bytes_total[1m])) or vector(0)"
 		exprMap["cluster_container_network_recive_drop_rate"] = "sum(increase(cpds_container_network_receive_drop_total[1m])) / sum(increase(cpds_container_network_receive_packets_total[1m]))"
 		exprMap["cluster_container_network_transmit_drop_rate"] = "sum(increase(cpds_container_network_transmit_drop_total[1m])) / sum(increase(cpds_container_network_transmit_packets_total[1m]))"
-		exprMap["cluster_container_network_recive_error_rate"] = "sum(increase(cpds_container_network_receive_errors_total[1m])) / sum(increase(cpds_container_network_transmit_packets_total[1m]))"
+		exprMap["cluster_container_network_recive_error_rate"] = "sum(increase(cpds_container_network_receive_errors_total[1m])) / sum(increase(cpds_container_network_transmit_packets_total[1m])) or vector(0)"
 		exprMap["cluster_container_network_transmit_error_rate"] = "sum(increase(cpds_container_network_transmit_errors_total[1m])) / sum(increase(cpds_container_network_transmit_packets_total[1m]))"
 		return exprMap
 	}()
