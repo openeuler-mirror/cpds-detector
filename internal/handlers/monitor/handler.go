@@ -154,13 +154,13 @@ func (h *handler) GetNodeResource() gin.HandlerFunc {
 
 func (h *handler) GetNodeContainerStatus() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		p, err := parseNodeMonitorDataQueryParams(ctx)
+		instance, err := parseInstanceFromParams(ctx)
 		if err != nil {
 			response.HandleError(ctx, http.StatusInternalServerError, cpdserr.NewError(cpdserr.MONITOR_GET_CLUSTER_CONTAINER_STATUS_ERROR, err))
 			return
 		}
 
-		records, err := h.operator.GetNodeContainerStatus(p.Instance)
+		records, err := h.operator.GetNodeContainerStatus(instance)
 		if err != nil {
 			response.HandleError(ctx, http.StatusInternalServerError, cpdserr.NewError(cpdserr.MONITOR_GET_CLUSTER_CONTAINER_STATUS_ERROR, err))
 			return
@@ -168,6 +168,14 @@ func (h *handler) GetNodeContainerStatus() gin.HandlerFunc {
 
 		response.HandleOK(ctx, records)
 	}
+}
+
+func parseInstanceFromParams(ctx *gin.Context) (string, error) {
+	instance, exist := ctx.GetQuery("instance")
+	if !exist {
+		return "", errors.New("params instance cannot be empty")
+	}
+	return instance, nil
 }
 
 func parseNodeMonitorDataQueryParams(ctx *gin.Context) (*nodeMonitorDataQueryParams, error) {
