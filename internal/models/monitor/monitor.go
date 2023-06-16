@@ -123,6 +123,7 @@ func (o *operator) GetNodeStatus(instance string) ([]NodeStatus, error) {
 			exprMap := make(map[string]string)
 			exprMap["container_total"] = fmt.Sprintf("sum (cpds_container_state{instance=\"%s\"})", target.Instance)
 			exprMap["container_running"] = fmt.Sprintf("sum (cpds_container_state{instance=\"%s\",state=\"running\"})", target.Instance)
+			exprMap["cpu_used_core"]=fmt.Sprintf("sum(increase(cpds_node_cpu_seconds_total{cpu!=\"cpu\",mode!=\"idle\",instance=\"%s\"}[1m]))",target.Instance)
 			exprMap["cpu_usage"] = fmt.Sprintf("1- sum(increase(cpds_node_cpu_seconds_total{cpu!=\"cpu\",mode=\"idle\",instance=\"%s\"}[1m])) / sum(increase(cpds_node_cpu_seconds_total{cpu!=\"cpu\",instance=\"%s\"}[1m]))", target.Instance, target.Instance)
 			exprMap["memory_usage"] = fmt.Sprintf("cpds_node_memory_usage_bytes{instance=\"%s\"} / cpds_node_memory_total_bytes{instance=~\"%s\"}", target.Instance, target.Instance)
 			exprMap["memory_used_bytes"] = fmt.Sprintf("cpds_node_memory_usage_bytes{instance=\"%s\"}", target.Instance)
