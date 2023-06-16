@@ -241,7 +241,7 @@ func (o *operator) GetClusterResource(startTime time.Time, endTime time.Time, st
 func (o *operator) GetClusterContainerStatus(startTime time.Time, endTime time.Time, step time.Duration) ([]prometheus.Metric, error) {
 	exprMap := func() map[string]string {
 		exprMap := make(map[string]string)
-		exprMap["cluster_container_running"] = "sum (cpds_container_state{state=\"running\"})"
+		exprMap["cluster_container_running"] = "sum (cpds_container_state{state=\"running\"}) or vector(0)"
 		exprMap["cluster_container_not_running"] = "sum (cpds_container_state{state!=\"running\"})"
 		exprMap["cluster_container_cpu_usage"] = "sum (irate(cpds_container_cpu_usage_seconds_tatal[1m]))  /sum(irate(cpds_node_cpu_seconds_total{cpu!=\"cpu\",mode!=\"idle\"}[1m]))"
 		exprMap["cluster_container_memory_usage"] = "sum(cpds_container_memory_usage_bytes) / sum(cpds_node_memory_total_bytes)"
