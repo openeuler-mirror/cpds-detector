@@ -141,7 +141,12 @@ func (o *operator) GetNodeStatus(instance string) ([]NodeStatus, error) {
 				case "container_total":
 					ns.Container.Total = int(metric.MetricData.MetricValues[0].Sample[1])
 				case "container_running":
-					ns.Container.Running = int(metric.MetricData.MetricValues[0].Sample[1])
+					if len(metric.MetricData.MetricValues) > 0 {
+						ns.Container.Running = int(metric.MetricData.MetricValues[0].Sample[1])
+					}else{
+						ns.Container.Running = 0
+					}
+						
 				case "cpu_usage":
 					ns.Cpu.Usage = metric.MetricData.MetricValues[0].Sample[1]
 				case "memory_usage":
