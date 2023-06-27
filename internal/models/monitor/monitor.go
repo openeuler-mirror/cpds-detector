@@ -141,7 +141,11 @@ func (o *operator) GetNodeStatus(instance string) ([]NodeStatus, error) {
 			for _, metric := range metrics {
 				switch metric.MetricName {
 				case "container_total":
-					ns.Container.Total = int(metric.MetricData.MetricValues[0].Sample[1])
+					if len(metric.MetricData.MetricValues) > 0 {
+						ns.Container.Total = int(metric.MetricData.MetricValues[0].Sample[1])
+					}else{
+						ns.Container.Total = 0
+					}
 				case "container_running":
 					if len(metric.MetricData.MetricValues) > 0 {
 						ns.Container.Running = int(metric.MetricData.MetricValues[0].Sample[1])
@@ -150,23 +154,59 @@ func (o *operator) GetNodeStatus(instance string) ([]NodeStatus, error) {
 					}
 						
 				case "cpu_usage":
-					ns.Cpu.Usage = metric.MetricData.MetricValues[0].Sample[1]
+					if len(metric.MetricData.MetricValues) > 0 {
+						ns.Cpu.Usage = metric.MetricData.MetricValues[0].Sample[1]
+					}else{
+						ns.Cpu.Usage = 0
+					}
 				case "cpu_used_core":
-					ns.Cpu.UsedCore = metric.MetricData.MetricValues[0].Sample[1]
+					if len(metric.MetricData.MetricValues) > 0 {
+						ns.Cpu.UsedCore = metric.MetricData.MetricValues[0].Sample[1]
+					}else{
+						ns.Cpu.UsedCore = 0
+					}
 				case "cpu_total_core":
-					ns.Cpu.TotalCore = metric.MetricData.MetricValues[0].Sample[1]
+					if len(metric.MetricData.MetricValues) > 0 {
+						ns.Cpu.TotalCore = metric.MetricData.MetricValues[0].Sample[1]
+					}else{
+						ns.Cpu.TotalCore = 0
+					}
 				case "memory_usage":
-					ns.Memory.Usage = metric.MetricData.MetricValues[0].Sample[1]
+					if len(metric.MetricData.MetricValues) > 0 {
+						ns.Memory.Usage = metric.MetricData.MetricValues[0].Sample[1]
+					}else{
+						ns.Memory.Usage = 0
+					}
 				case "memory_used_bytes":
-					ns.Memory.UsedBytes = metric.MetricData.MetricValues[0].Sample[1]
+					if len(metric.MetricData.MetricValues) > 0 {
+						ns.Memory.UsedBytes = metric.MetricData.MetricValues[0].Sample[1]
+					}else{
+						ns.Memory.UsedBytes = 0
+					}
 				case "memory_total_bytes":
-					ns.Memory.TotalBytes = metric.MetricData.MetricValues[0].Sample[1]
+					if len(metric.MetricData.MetricValues) > 0 {
+						ns.Memory.TotalBytes = metric.MetricData.MetricValues[0].Sample[1]
+					}else{
+						ns.Memory.TotalBytes = 0
+					}
 				case "disk_usage":
-					ns.Disk.Usage = metric.MetricData.MetricValues[0].Sample[1]
+					if len(metric.MetricData.MetricValues) > 0 {
+						ns.Disk.Usage = metric.MetricData.MetricValues[0].Sample[1]
+					}else{
+						ns.Disk.Usage = 0
+					}
 				case "disk_used_bytes":
-					ns.Disk.UsedBytes = metric.MetricData.MetricValues[0].Sample[1]
+					if len(metric.MetricData.MetricValues) > 0 {
+						ns.Disk.UsedBytes = metric.MetricData.MetricValues[0].Sample[1]
+					}else{
+						ns.Disk.UsedBytes = 0
+					}
 				case "disk_total_bytes":
-					ns.Disk.TotalBytes = metric.MetricData.MetricValues[0].Sample[1]
+					if len(metric.MetricData.MetricValues) > 0 {
+						ns.Disk.TotalBytes = metric.MetricData.MetricValues[0].Sample[1]
+					}else{
+						ns.Disk.TotalBytes = 0
+					}
 				}
 			}
 			mtx.Lock()
