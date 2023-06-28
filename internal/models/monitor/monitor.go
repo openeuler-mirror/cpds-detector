@@ -270,7 +270,7 @@ func (o *operator) GetNodeContainerStatus(instance string) ([]prometheus.Metric,
 func (o *operator) GetClusterResource(startTime time.Time, endTime time.Time, step time.Duration) ([]prometheus.Metric, error) {
 	exprMap := func() map[string]string {
 		exprMap := make(map[string]string)
-		exprMap["cluster_cpu_usage"] = "avg(sum by (instance)(irate(cpds_node_cpu_seconds_total{cpu!=\"cpu\", mode!=\"idle\"}[1m])))"
+		exprMap["cluster_cpu_usage"] = "1-avg(irate(cpds_node_cpu_seconds_total{cpu!=\"cpu\", mode=\"idle\"}[1m]))"
 		exprMap["cluster_memory_usage"] = "sum(cpds_node_memory_usage_bytes)/scalar(sum(cpds_node_memory_total_bytes))"
 		exprMap["cluster_disk_usage"] = "sum(cpds_node_fs_usage_bytes)/sum(cpds_node_fs_total_bytes)"
 		exprMap["cluster_disk_written_complete"] = "sum(irate(cpds_node_disk_writes_completed_total[1m]))"
