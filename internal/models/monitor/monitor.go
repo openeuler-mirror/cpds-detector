@@ -282,6 +282,7 @@ func (o *operator) GetClusterResource(startTime time.Time, endTime time.Time, st
 		exprMap["cluster_network_transmit_error_rate"] = "sum(increase(cpds_node_network_transmit_errors_total[1m])) / sum(increase(cpds_node_network_transmit_packets_total[1m])) or vector(0)"
 		exprMap["cluster_disk_written_bytes"] = "sum(irate(cpds_node_disk_written_bytes_total[1m]))"
 		exprMap["cluster_retransm_rate"]="sum(increase(cpds_node_netstat_tcp_retrans_segs[1m])) / sum(increase(cpds_node_netstat_tcp_out_segs[1m])) or vector(0)"
+		exprMap["cluster_network_iops"]="sum(irate(cpds_node_network_receive_packets_total[1m]))+sum(irate(cpds_node_network_transmit_packets_total[1m]))"
 		exprMap["cluster_disk_read_bytes"] = "sum(irate(cpds_node_disk_read_bytes_total[1m]))"
 		return exprMap
 	}()
