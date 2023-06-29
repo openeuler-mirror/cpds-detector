@@ -225,10 +225,11 @@ func (o *operator) GetNodeResources(instance string, startTime time.Time, endTim
 	exprMap := func(string) map[string]string {
 		exprMap := make(map[string]string)
 		exprMap["node_container_total"] = fmt.Sprintf("sum (cpds_container_state{instance=~\"%s.*\"})", instance)
-		exprMap["node_iops"] = fmt.Sprintf("sum(irate(cpds_node_disk_reads_completed_total{instance=~\"%s.*\"}[1m]))+sum(irate(cpds_node_disk_writes_completed_total{instance=~\"%s.*\"}[1m]))",instance,instance)
+		exprMap["node_disk_iops"] = fmt.Sprintf("sum(irate(cpds_node_disk_reads_completed_total{instance=~\"%s.*\"}[1m]))+sum(irate(cpds_node_disk_writes_completed_total{instance=~\"%s.*\"}[1m]))",instance,instance)
 		exprMap["node_network_iops"]=fmt.Sprintf("sum(irate(cpds_node_network_receive_packets_total{instance=~\"%s.*\"}[1m]))+sum(irate(cpds_node_network_transmit_packets_total{instance=~\"%s.*\"}[1m]))",instance,instance)
 		exprMap["node_container_running"] = fmt.Sprintf("sum (cpds_container_state{instance=~\"%s.*\",state=\"running\"})  or vector(0)", instance)
 		exprMap["node_network_recive_drop_rate"] = fmt.Sprintf("sum(increase(cpds_node_network_receive_drop_total{instance=~\"%s.*\"}[1m])) / sum(increase(cpds_node_network_receive_packets_total{instance=~\"%s.*\"}[1m])) or vector(0)",instance,instance)
+		exprMap["node_network_transmit_drop_rate"] = fmt.Sprintf("sum(increase(cpds_node_network_transmit_drop_total{instance=~\"%s.*\"}[1m])) / sum(increase(cpds_node_network_transmit_packets_total{instance=~\"%s.*\"}[1m])) or vector(0)",instance,instance)
 		exprMap["node_cpu_usage"] = fmt.Sprintf("1 - avg(irate(cpds_node_cpu_seconds_total{cpu!=\"cpu\",mode=\"idle\",instance=~\"%s.*\"}[1m]))", instance)
 		exprMap["node_memory_usage"] = fmt.Sprintf("cpds_node_memory_usage_bytes{instance=~\"%s.*\"} / cpds_node_memory_total_bytes{instance=~\"%s.*\"}", instance, instance)
 		exprMap["node_disk_usage"] = fmt.Sprintf("cpds_node_fs_usage_bytes{mount=\"/\",instance=~\"%s.*\"} / cpds_node_fs_total_bytes{mount=\"/\",instance=~\"%s.*\"}", instance, instance)
