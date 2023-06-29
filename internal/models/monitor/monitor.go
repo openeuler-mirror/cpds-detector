@@ -251,7 +251,7 @@ func (o *operator) GetNodeContainerStatus(instance string) ([]prometheus.Metric,
 	exprMap := func(string) map[string]string {
 		exprMap := make(map[string]string)
 		exprMap["node_container_status"] = fmt.Sprintf("cpds_container_state{instance=~\"%s.*\"}", instance)
-		exprMap["node_container_cpu_usage"] = fmt.Sprintf("sum by (container)(irate(cpds_container_cpu_usage_seconds_tatal{instance=~\"%s.*\"}[1m])) / scalar(sum(irate(cpds_node_cpu_seconds_total{cpu!=\"cpu\",mode!=\"idle\",instance=~\"%s.*\"}[1m])))", instance, instance)
+		exprMap["node_container_cpu_usage"] = fmt.Sprintf("sum by (container)(irate(cpds_container_cpu_usage_seconds_total{instance=~\"%s.*\"}[1m])) / scalar(sum(irate(cpds_node_cpu_seconds_total{cpu!=\"cpu\",mode!=\"idle\",instance=~\"%s.*\"}[1m])))", instance, instance)
 		exprMap["node_container_memory_used"] = fmt.Sprintf("cpds_container_memory_usage_bytes{instance=~\"%s.*\"}", instance)
 		exprMap["node_container_inbound_traffic"] = fmt.Sprintf("sum by (container)(irate(cpds_container_network_receive_bytes_total{instance=~\"%s.*\"}[1m]))", instance)
 		exprMap["node_container_outbound_traffic"] = fmt.Sprintf("sum by (container)(irate(cpds_container_network_transmit_bytes_total{instance=~\"%s.*\"}[1m]))", instance)
@@ -301,7 +301,7 @@ func (o *operator) GetClusterContainerStatus(startTime time.Time, endTime time.T
 		exprMap := make(map[string]string)
 		exprMap["cluster_container_running"] = "sum (cpds_container_state{state=\"running\"}) or vector(0)"
 		exprMap["cluster_container_not_running"] = "sum (cpds_container_state{state!=\"running\"})"
-		exprMap["cluster_container_cpu_usage"] = "sum (irate(cpds_container_cpu_usage_seconds_tatal[1m]))  /sum(irate(cpds_node_cpu_seconds_total{cpu!=\"cpu\",mode!=\"idle\"}[1m]))"
+		exprMap["cluster_container_cpu_usage"] = "sum (irate(cpds_container_cpu_usage_seconds_total[1m]))  /sum(irate(cpds_node_cpu_seconds_total{cpu!=\"cpu\",mode!=\"idle\"}[1m]))"
 		exprMap["cluster_container_memory_usage"] = "sum(cpds_container_memory_usage_bytes) / sum(cpds_node_memory_total_bytes)"
 		exprMap["cluster_container_recive_bytes"] = "sum (irate(cpds_container_network_receive_bytes_total[1m])) or vector(0)"
 		exprMap["cluster_container_write_bytes"] = "sum (irate(cpds_container_network_transmit_bytes_total[1m])) or vector(0)"
