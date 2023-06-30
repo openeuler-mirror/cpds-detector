@@ -237,6 +237,7 @@ func (o *operator) GetNodeResources(instance string, startTime time.Time, endTim
 		exprMap["node_network_recive_error_rate"] = fmt.Sprintf("sum(increase(cpds_node_network_receive_errors_total{instance=~\"%s.*\"}[1m])) / sum(increase(cpds_node_network_receive_packets_total{instance=~\"%s.*\"}[1m])) or vector(0)",instance,instance)
 		exprMap["node_network_transmit_error_rate"] = fmt.Sprintf("sum(increase(cpds_node_network_transmit_errors_total{instance=~\"%s.*\"}[1m])) / sum(increase(cpds_node_network_transmit_packets_total{instance=~\"%s.*\"}[1m])) or vector(0)",instance,instance)
 		exprMap["node_disk_read_bytes"] = fmt.Sprintf("sum (irate(cpds_node_disk_read_bytes_total{instance=~\"%s.*\"}[1m]))", instance)
+		exprMap["node_retransm_rate"]=fmt.Sprintf("sum(increase(cpds_node_netstat_tcp_retrans_segs{instance=~\"%s.*\"}[1m])) / sum(increase(cpds_node_netstat_tcp_out_segs{instance=~\"%s.*\"}[1m])) or vector(0)",instance,instance)
 		exprMap["node_disk_written_complete"] = fmt.Sprintf("sum (irate(cpds_node_disk_writes_completed_total{instance=~\"%s.*\"}[1m]))", instance)
 		exprMap["node_disk_read_complete"] = fmt.Sprintf("sum (irate(cpds_node_disk_reads_completed_total{instance=~\"%s.*\"}[1m]))", instance)
 		// TODO: get network recive/transmit rate, get network drop rate, get network error rate
