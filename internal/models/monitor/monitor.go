@@ -280,7 +280,6 @@ func (o *operator) GetClusterResource(startTime time.Time, endTime time.Time, st
 		exprMap["cluster_cpu_usage"] = "1-avg(irate(cpds_node_cpu_seconds_total{cpu!=\"cpu\", mode=\"idle\"}[1m]))"
 		exprMap["cluster_memory_usage"] = "sum(cpds_node_memory_usage_bytes)/scalar(sum(cpds_node_memory_total_bytes))"
 		exprMap["cluster_disk_usage"] = "sum(cpds_node_fs_usage_bytes)/sum(cpds_node_fs_total_bytes)"
-		exprMap["cluster_disk_iops"]="sum(irate(cpds_node_disk_reads_completed_total[1m]))+sum(irate(cpds_node_disk_writes_completed_total[1m]))"
 		exprMap["cluster_disk_written_complete"] = "sum(irate(cpds_node_disk_writes_completed_total[1m]))"
 		exprMap["cluster_disk_read_complete"] = "sum(irate(cpds_node_disk_reads_completed_total[1m]))"
 		exprMap["cluster_network_recive_drop_rate"] = "sum(increase(cpds_node_network_receive_drop_total[1m])) / sum(increase(cpds_node_network_receive_packets_total[1m])) or vector(0)"
