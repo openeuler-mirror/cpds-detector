@@ -72,6 +72,7 @@ func manageRules(rulesChan chan []Rule) {
 		case rules := <-rulesChan:
 			for oldRule, stopChan := range listendRules {
 				if len(rules) == 0{
+					delete(listendRules,oldRule)
 					stopChan <- true
 				}
 				for index, newRule := range rules {
@@ -79,6 +80,7 @@ func manageRules(rulesChan chan []Rule) {
 						break
 					}
 					if index == len(rules)-1 {
+						delete(listendRules,oldRule)
 						stopChan <- true
 					}
 				}
