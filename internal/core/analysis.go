@@ -75,7 +75,7 @@ func manageRules(rulesChan chan []Rule) {
 					stopChan <- true
 				}
 				for index, newRule := range rules {
-					if oldRule.ID == newRule.ID {
+					if oldRule == newRule {
 						break
 					}
 					if index == len(rules)-1 {
