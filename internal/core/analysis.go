@@ -71,6 +71,9 @@ func manageRules(rulesChan chan []Rule) {
 		select {
 		case rules := <-rulesChan:
 			for oldRule, stopChan := range listendRules {
+				if len(rules) == 0{
+					stopChan <- true
+				}
 				for index, newRule := range rules {
 					if oldRule.ID == newRule.ID {
 						break
