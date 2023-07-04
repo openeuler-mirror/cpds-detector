@@ -155,7 +155,6 @@ func insertRecord(id uint, name, kind string, metric *prometheus.Metric) error {
 	var newRecord, existingRecord *Analysis
 	analysisTime := metric.MetricData.MetricValues[0].Sample[0]
 	newRecord = &Analysis{
-		RuleID:     id,
 		RuleName:   name,
 		Status:     kind,
 		Count:      1,
@@ -164,7 +163,7 @@ func insertRecord(id uint, name, kind string, metric *prometheus.Metric) error {
 	}
 
 	db := r.db.Session(&gorm.Session{}).Model(&Analysis{})
-	result := db.Where("rule_id = ?", id).Order("update_time DESC").Limit(1).Find(&existingRecord)
+	result := db.Where("rule_name = ?", name).Order("update_time DESC").Limit(1).Find(&existingRecord)
 	if result.Error != nil && !errors.Is(result.Error, gorm.ErrRecordNotFound) {
 		return result.Error
 	}
