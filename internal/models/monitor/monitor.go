@@ -4,6 +4,7 @@ import (
 	"cpds/cpds-detector/pkg/prometheus"
 	"fmt"
 	"net/http"
+	"strings"
 	"sync"
 	"time"
 
@@ -13,7 +14,7 @@ import (
 )
 
 type Operator interface {
-	GetMonitorTargets() (*MonitorTargets, error)
+	GetMonitorTargets(instance ...string) (*MonitorTargets, error)
 
 	GetNodeInfo(instance string) ([]NodeInfo, error)
 
@@ -46,7 +47,7 @@ func NewOperator(prometheusHost string, prometheusPort int) Operator {
 	}
 }
 
-func (o *operator) GetMonitorTargets() (*MonitorTargets, error) {
+func (o *operator) GetMonitorTargets(instance ...string) (*MonitorTargets, error) {
 	url := fmt.Sprintf("http://%s:%d/api/v1/targets?scrapePool=cpds", o.prometheusConfig.host, o.prometheusConfig.port)
 	resp, err := http.Get(url)
 	if err != nil {
@@ -58,9 +59,14 @@ func (o *operator) GetMonitorTargets() (*MonitorTargets, error) {
 	if err := jsoniter.NewDecoder(resp.Body).Decode(&pr); err != nil {
 		return nil, err
 	}
-
+	var pr1 promResponse
+	for _, target :=range pr.Data.Targets{
+		if strings.Contains(target.DiscoveredLabels.Address,instance[0]) {
+			pr1.Data.Targets=append(pr1.Data.Targets, target)
+		}
+	}
 	var mt MonitorTargets
-	for _, target := range pr.Data.Targets {
+	for _, target := range pr1.Data.Targets {
 		mt.addTargets(target.DiscoveredLabels.Address, target.Health)
 	}
 
@@ -96,7 +102,7 @@ func (o *operator) GetNodeStatus(instance string) ([]NodeStatus, error) {
 	var mtx sync.Mutex
 	var wg sync.WaitGroup
 
-	t, err := o.GetMonitorTargets()
+	t, err := o.GetMonitorTargets(instance)
 	if err != nil {
 		return nil, err
 	}
