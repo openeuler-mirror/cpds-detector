@@ -45,7 +45,7 @@ func New(config *config.Config, logger *zap.Logger) Handler {
 
 func (h *handler) GetMonitorTargets() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		records, err := h.operator.GetMonitorTargets()
+		records, err := h.operator.GetMonitorTargets("")
 		if err != nil {
 			response.HandleError(ctx, http.StatusInternalServerError, cpdserr.NewError(cpdserr.MONITOR_GET_TARGET_ERROR, err))
 			return

@@ -14,7 +14,7 @@ import (
 )
 
 type Operator interface {
-	GetMonitorTargets(instance ...string) (*MonitorTargets, error)
+	GetMonitorTargets(instance string) (*MonitorTargets, error)
 
 	GetNodeInfo(instance string) ([]NodeInfo, error)
 
@@ -47,7 +47,7 @@ func NewOperator(prometheusHost string, prometheusPort int) Operator {
 	}
 }
 
-func (o *operator) GetMonitorTargets(instance ...string) (*MonitorTargets, error) {
+func (o *operator) GetMonitorTargets(instance string) (*MonitorTargets, error) {
 	url := fmt.Sprintf("http://%s:%d/api/v1/targets?scrapePool=cpds", o.prometheusConfig.host, o.prometheusConfig.port)
 	resp, err := http.Get(url)
 	if err != nil {
@@ -61,7 +61,7 @@ func (o *operator) GetMonitorTargets(instance ...string) (*MonitorTargets, error
 	}
 	var pr1 promResponse
 	for _, target :=range pr.Data.Targets{
-		if strings.Contains(target.DiscoveredLabels.Address,instance[0]) {
+		if strings.Contains(target.DiscoveredLabels.Address,instance) {
 			pr1.Data.Targets=append(pr1.Data.Targets, target)
 		}
 	}
@@ -264,7 +264,7 @@ func (o *operator) GetNodeContainerStatus(instance string) ([]prometheus.Metric,
 	exprMap := func(string) map[string]string {
 		exprMap := make(map[string]string)
 		exprMap["node_container_status"] = fmt.Sprintf("cpds_container_state{instance=~\"%s.*\"}", instance)
-		exprMap["node_container_cpu_usage"] = fmt.Sprintf("sum by (container)(irate(cpds_container_cpu_usage_seconds_total{instance=~\"%s.*\"}[1m])) / scalar(sum(irate(cpds_node_cpu_seconds_total{cpu!=\"cpu\",mode!=\"idle\",instance=~\"%s.*\"}[1m])))", instance, instance)
+		exprMap["node_container_cpu_usage"] = fmt.Sprintf("(increase(cpds_container_cpu_usage_seconds_total{instance=~\"%s.*\"}[1m]))",instance)
 		exprMap["node_container_memory_used"] = fmt.Sprintf("cpds_container_memory_usage_bytes{instance=~\"%s.*\"}", instance)
 		exprMap["node_container_inbound_traffic"] = fmt.Sprintf("sum by (container)(irate(cpds_container_network_receive_bytes_total{instance=~\"%s.*\"}[1m]))", instance)
 		exprMap["node_container_outbound_traffic"] = fmt.Sprintf("sum by (container)(irate(cpds_container_network_transmit_bytes_total{instance=~\"%s.*\"}[1m]))", instance)
@@ -285,7 +285,7 @@ func (o *operator) GetClusterResource(startTime time.Time, endTime time.Time, st
 		exprMap := make(map[string]string)
 		exprMap["cluster_cpu_usage"] = "1-avg(irate(cpds_node_cpu_seconds_total{cpu!=\"cpu\", mode=\"idle\"}[1m]))"
 		exprMap["cluster_memory_usage"] = "sum(cpds_node_memory_usage_bytes)/scalar(sum(cpds_node_memory_total_bytes))"
-		exprMap["cluster_disk_usage"] = "sum(cpds_node_fs_usage_bytes)/sum(cpds_node_fs_total_bytes)"
+		exprMap["cluster_disk_usage"] = "sum(cpds_node_fs_usage_bytes{mount=\"/\"})/sum(cpds_node_fs_total_bytes{mount=\"/\"})"
 		exprMap["cluster_disk_written_complete"] = "sum(irate(cpds_node_disk_writes_completed_total[1m]))"
 		exprMap["cluster_disk_read_complete"] = "sum(irate(cpds_node_disk_reads_completed_total[1m]))"
 		exprMap["cluster_network_recive_drop_rate"] = "sum(increase(cpds_node_network_receive_drop_total[1m])) / sum(increase(cpds_node_network_receive_packets_total[1m])) or vector(0)"
@@ -317,7 +317,7 @@ func (o *operator) GetClusterContainerStatus(startTime time.Time, endTime time.T
 		exprMap["cluster_container_memory_usage"] = "sum(cpds_container_memory_usage_bytes) / sum(cpds_node_memory_total_bytes)"
 		exprMap["cluster_container_recive_bytes"] = "sum (irate(cpds_container_network_receive_bytes_total[1m])) or vector(0)"
 		exprMap["cluster_container_write_bytes"] = "sum (irate(cpds_container_network_transmit_bytes_total[1m])) or vector(0)"
-		exprMap["cluster_container_disk_usage"] = "sum(cpds_container_disk_usage_bytes) / sum(cpds_node_fs_total_bytes)"
+		exprMap["cluster_container_disk_usage"] = "sum(cpds_container_disk_usage_bytes) / sum(cpds_node_fs_total_bytes{mount=\"/\"})"
 		exprMap["cluster_container_network_recive_drop_rate"] = "sum(increase(cpds_container_network_receive_drop_total[1m])) / sum(increase(cpds_container_network_receive_packets_total[1m]) or vector(1)) or vector(0)"
 		exprMap["cluster_container_network_transmit_drop_rate"] = "sum(increase(cpds_container_network_transmit_drop_total[1m])) / sum(increase(cpds_container_network_transmit_packets_total[1m]) or vector(1)) or vector(0)"
 		exprMap["cluster_container_network_recive_error_rate"] = "sum(increase(cpds_container_network_receive_errors_total[1m])) / sum(increase(cpds_container_network_transmit_packets_total[1m]) or vector(1)) or vector(0)"
