@@ -264,10 +264,10 @@ func (o *operator) GetNodeContainerStatus(instance string) ([]prometheus.Metric,
 	exprMap := func(string) map[string]string {
 		exprMap := make(map[string]string)
 		exprMap["node_container_status"] = fmt.Sprintf("cpds_container_state{instance=~\"%s.*\"}", instance)
-		exprMap["node_container_cpu_usage"] = fmt.Sprintf("(increase(cpds_container_cpu_usage_seconds_total{instance=~\"%s.*\"}[1m]))",instance)
+		exprMap["node_container_cpu_usage"] = fmt.Sprintf("rate(cpds_container_cpu_usage_seconds_total{instance=~\"%s.*\"}[1m])",instance)
 		exprMap["node_container_memory_used"] = fmt.Sprintf("cpds_container_memory_usage_bytes{instance=~\"%s.*\"}", instance)
-		exprMap["node_container_inbound_traffic"] = fmt.Sprintf("sum by (container)(irate(cpds_container_network_receive_bytes_total{instance=~\"%s.*\"}[1m]))", instance)
-		exprMap["node_container_outbound_traffic"] = fmt.Sprintf("sum by (container)(irate(cpds_container_network_transmit_bytes_total{instance=~\"%s.*\"}[1m]))", instance)
+		exprMap["node_container_inbound_traffic"] = fmt.Sprintf("(rate(cpds_container_network_receive_bytes_total{interface=~\"enp.*|eth[0-9]+\",instance=~\"%s.*\"}[1m]))", instance)
+		exprMap["node_container_outbound_traffic"] = fmt.Sprintf("rate(cpds_container_network_transmit_bytes_total{interface=~\"enp.*|eth[0-9]+\",instance=~\"%s.*\"}[1m])", instance)
 		return exprMap
 	}(instance)
 
