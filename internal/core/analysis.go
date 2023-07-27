@@ -178,7 +178,7 @@ func insertRecord(id uint, name, kind string, metric *prometheus.Metric) error {
 		if kind == "fault" {
 			existingRecord.Status = kind
 		}
-		result := db.Model(&existingRecord).Updates(Analysis{RuleName: name,Count: existingRecord.Count + 1, UpdateTime: int64(analysisTime)})
+		result := db.Model(&existingRecord).Updates(Analysis{RuleName: name, Count: existingRecord.Count + 1, Status: existingRecord.Status, UpdateTime: int64(analysisTime)})
 		if result.Error != nil {
 			return result.Error
 		}
