@@ -13,7 +13,7 @@ type Analysis struct {
 type Rule struct {
 	ID                     uint    `json:"id" gorm:"primaryKey;AUTO_INCREMENT"`
 	Name                   string  `json:"name" gorm:"unique;not null"`
-	Expression             string  `json:"expression" gorm:"not null"`
+	Expression             string  `json:"expression" gorm:"not null;type:varchar(512)"`
 	SubhealthConditionType string  `json:"subhealth_condition_type"`
 	SubhealthThresholds    float64 `json:"subhealth_thresholds"`
 	FaultConditionType     string  `json:"fault_condition_type"`
