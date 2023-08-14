@@ -237,14 +237,14 @@ func (o *operator) GetNodeStatus(instance string) ([]NodeStatus, error) {
 func (o *operator) GetNodeResources(instance string, startTime time.Time, endTime time.Time, step time.Duration) ([]prometheus.Metric, error) {
 	exprMap := func(string) map[string]string {
 		exprMap := make(map[string]string)
-		exprMap["node_container_total"] = fmt.Sprintf("sum (cpds_container_state{instance=~\"%s.*\"})", instance)
-		exprMap["node_disk_iops"] = fmt.Sprintf("sum(irate(cpds_node_disk_reads_completed_total{instance=~\"%s.*\"}[1m]))+sum(irate(cpds_node_disk_writes_completed_total{instance=~\"%s.*\"}[1m]))",instance,instance)
-		exprMap["node_network_recive_iops"]=fmt.Sprintf("sum(rate(cpds_node_network_receive_packets_total{instance=~\"%s.*\",interface!~\"lo|bond[0-9]|cbr[0-9]|veth.*|vir.*|docker.*|vnet.*|br.*|tap.*\"}[1m]))",instance)
-		exprMap["node_network_transmit_iops"]=fmt.Sprintf("sum(rate(cpds_node_network_transmit_packets_total{instance=~\"%s.*\",interface!~\"lo|bond[0-9]|cbr[0-9]|veth.*|vir.*|docker.*|vnet.*|br.*|tap.*\"}[1m]))",instance)
-		exprMap["node_container_running"] = fmt.Sprintf("sum (cpds_container_state{instance=~\"%s.*\",state=\"running\"})  or vector(0)", instance)
+		exprMap["node_network_recive_iops"]=fmt.Sprintf("sum(cpds_node_network_info{mask=~\".+\"}*0+on(interface,instance) group_right rate(cpds_node_network_receive_packets_total{instance=~\"%s.*\",interface!~\"lo|bond[0-9]|cbr[0-9]|veth.*|vir.*|docker.*|vnet.*|br.*|tap.*|tunl.*\"}[1m]))",instance)
+		exprMap["node_network_transmit_iops"]=fmt.Sprintf("sum(cpds_node_network_info{mask=~\".+\"}*0+on(interface,instance) group_right rate(cpds_node_network_transmit_packets_total{instance=~\"%s.*\",interface!~\"lo|bond[0-9]|cbr[0-9]|veth.*|vir.*|docker.*|vnet.*|br.*|tap.*|tunl.*\"}[1m]))",instance)
+		exprMap["node_network_recive_bytes"]=fmt.Sprintf("sum(cpds_node_network_info{mask=~\".+\"}*0+on(interface,instance) group_right rate(cpds_node_network_receive_bytes_total{instance=~\"%s.*\",interface!~\"lo|bond[0-9]|cbr[0-9]|veth.*|vir.*|docker.*|vnet.*|br.*|tap.*|tunl.*\"}[1m]))", instance)
+		exprMap["node_network_transmit_bytes"]=fmt.Sprintf("sum(cpds_node_network_info{mask=~\".+\"}*0+on(interface,instance) group_right rate(cpds_node_network_transmit_bytes_total{instance=~\"%s.*\",interface!~\"lo|bond[0-9]|cbr[0-9]|veth.*|vir.*|docker.*|vnet.*|br.*|tap.*|tunl.*\"}[1m]))", instance)
 		exprMap["node_network_recive_drop_rate"] = fmt.Sprintf("sum(increase(cpds_node_network_receive_drop_total{instance=~\"%s.*\"}[1m])) / sum(increase(cpds_node_network_receive_packets_total{instance=~\"%s.*\"}[1m])) or vector(0)",instance,instance)
 		exprMap["node_network_transmit_drop_rate"] = fmt.Sprintf("sum(increase(cpds_node_network_transmit_drop_total{instance=~\"%s.*\"}[1m])) / sum(increase(cpds_node_network_transmit_packets_total{instance=~\"%s.*\"}[1m])) or vector(0)",instance,instance)
 		exprMap["node_cpu_usage"] = fmt.Sprintf("1-(sum(rate(cpds_node_cpu_seconds_total{cpu!=\"cpu\", mode=\"idle\",instance=~\"%s.*\"}[1m]))/sum (rate(cpds_node_cpu_seconds_total{cpu!=\"cpu\",instance=~\"%s.*\"}[1m])))", instance, instance)
+		exprMap["node_cpu_iowait"]=fmt.Sprintf("sum(rate(cpds_node_cpu_seconds_total{cpu!=\"cpu\",mode=\"iowait\",instance=~\"%s.*\"}[1m]))/sum(rate(cpds_node_cpu_seconds_total{cpu!=\"cpu\",instance=~\"%s.*\"}[1m]))", instance, instance)
 		exprMap["node_network_recive_error_rate"] = fmt.Sprintf("sum(increase(cpds_node_network_receive_errors_total{instance=~\"%s.*\"}[1m])) / sum(increase(cpds_node_network_receive_packets_total{instance=~\"%s.*\"}[1m])) or vector(0)",instance,instance)
 		exprMap["node_network_transmit_error_rate"] = fmt.Sprintf("sum(increase(cpds_node_network_transmit_errors_total{instance=~\"%s.*\"}[1m])) / sum(increase(cpds_node_network_transmit_packets_total{instance=~\"%s.*\"}[1m])) or vector(0)",instance,instance)
 		exprMap["node_memory_usage"] = fmt.Sprintf("cpds_node_memory_usage_bytes{instance=~\"%s.*\"} / cpds_node_memory_total_bytes{instance=~\"%s.*\"}", instance, instance)
@@ -274,8 +274,8 @@ func (o *operator) GetNodeContainerStatus(instance string) ([]prometheus.Metric,
 		exprMap["node_container_status"] = fmt.Sprintf("cpds_container_state{instance=~\"%s.*\"}", instance)
 		exprMap["node_container_cpu_usage"] = fmt.Sprintf("((sum(rate(cpds_container_cpu_usage_seconds_total{instance=~\"%s.*\"}[1m])) by (container)) /scalar(sum(rate(cpds_node_cpu_seconds_total{cpu!=\"cpu\",instance=~\"%s.*\"} [1m]))))*scalar(count(sum(cpds_node_cpu_seconds_total{cpu!=\"cpu\",instance=~\"%s.*\"}) by (cpu)))",instance,instance,instance)
 		exprMap["node_container_memory_used"] = fmt.Sprintf("cpds_container_memory_usage_bytes{instance=~\"%s.*\"}", instance)
-		exprMap["node_container_inbound_traffic"] = fmt.Sprintf("sum(cpds_container_network_receive_bytes_total{interface!~\"lo|bond[0-9]|cbr[0-9]|veth.*|vir.*|docker.*|vnet.*|br.*|tap.*\",instance=~\"%s.*\",network_mode!~\"host|container.*|none\"}) by (container)", instance)
-		exprMap["node_container_outbound_traffic"] = fmt.Sprintf("sum(cpds_container_network_transmit_bytes_total{interface!~\"lo|bond[0-9]|cbr[0-9]|veth.*|vir.*|docker.*|vnet.*|br.*|tap.*\",instance=~\"%s.*\",network_mode!~\"host|container.*|none\"}) by (container)", instance)
+		exprMap["node_container_inbound_traffic"] = fmt.Sprintf("sum(cpds_container_network_receive_bytes_total{interface!~\"lo|bond[0-9]|cbr[0-9]|veth.*|vir.*|docker.*|vnet.*|br.*|tap.*|tunl.*\",instance=~\"%s.*\",network_mode!~\"host|container.*|none\"}) by (container)", instance)
+		exprMap["node_container_outbound_traffic"] = fmt.Sprintf("sum(cpds_container_network_transmit_bytes_total{interface!~\"lo|bond[0-9]|cbr[0-9]|veth.*|vir.*|docker.*|vnet.*|br.*|tap.*|tunl.*\",instance=~\"%s.*\",network_mode!~\"host|container.*|none\"}) by (container)", instance)
 		return exprMap
 	}(instance)
 
@@ -293,17 +293,20 @@ func (o *operator) GetClusterResource(startTime time.Time, endTime time.Time, st
 		exprMap := make(map[string]string)
 		exprMap["cluster_cpu_usage"] = "1-(sum(rate(cpds_node_cpu_seconds_total{cpu!=\"cpu\", mode=\"idle\"}[1m]))/sum (rate(cpds_node_cpu_seconds_total{cpu!=\"cpu\"}[1m])))"
 		exprMap["cluster_memory_usage"] = "sum(cpds_node_memory_usage_bytes)/scalar(sum(cpds_node_memory_total_bytes))"
+		exprMap["cluster_network_recive_bytes"] = "sum(cpds_node_network_info{mask=~\".+\"}*0+on(interface,instance) group_right rate(cpds_node_network_receive_bytes_total{interface!~\"lo|bond[0-9]|cbr[0-9]|veth.*|vir.*|docker.*|vnet.*|br.*|tap.*|tunl.*\"}[1m]))"
+		exprMap["cluster_network_transmit_bytes"] = "sum(cpds_node_network_info{mask=~\".+\"}*0+on(interface,instance) group_right rate(cpds_node_network_transmit_bytes_total{interface!~\"lo|bond[0-9]|cbr[0-9]|veth.*|vir.*|docker.*|vnet.*|br.*|tap.*|tunl.*\"}[1m]))"
 		exprMap["cluster_disk_usage"] = "sum(cpds_node_blk_total_bytes{mount=~\".+\"}*0 + on(mount,instance) group_right cpds_node_fs_usage_bytes)/(sum(cpds_node_blk_total_bytes{mount=~\".+\"}*0 + on(mount,instance) group_right cpds_node_fs_usage_bytes)+sum(cpds_node_blk_total_bytes{mount=~\".+\"}*0 + on(mount,instance) group_right cpds_node_fs_available_bytes))"
 		exprMap["cluster_disk_written_complete"] = "sum((label_replace(cpds_node_blk_total_bytes{type=\"disk\"}, \"device\", \"$1\", \"name\", \"(.+)\")*0)+ on(device,instance) group_right rate(cpds_node_disk_writes_completed_total[1m]))"
 		exprMap["cluster_disk_read_complete"] = "sum((label_replace(cpds_node_blk_total_bytes{type=\"disk\"}, \"device\", \"$1\", \"name\", \"(.+)\")*0)+ on(device,instance) group_right rate(cpds_node_disk_reads_completed_total[1m]))"
 		exprMap["cluster_disk_written_bytes"] = "sum((label_replace(cpds_node_blk_total_bytes{type=\"disk\"}, \"device\", \"$1\", \"name\", \"(.+)\")*0)+ on(device,instance) group_right rate(cpds_node_disk_written_bytes_total[1m]))"
+		exprMap["cluster_cpu_iowait"] = "sum(rate(cpds_node_cpu_seconds_total{cpu!=\"cpu\",mode=\"iowait\"}[1m]))/sum(rate(cpds_node_cpu_seconds_total{cpu!=\"cpu\"}[1m]))"
 		exprMap["cluster_network_recive_drop_rate"] = "sum(increase(cpds_node_network_receive_drop_total[1m])) / sum(increase(cpds_node_network_receive_packets_total[1m]))"
 		exprMap["cluster_network_recive_error_rate"] = "sum(increase(cpds_node_network_receive_errors_total[1m])) / sum(increase(cpds_node_network_receive_packets_total[1m]))"
 		exprMap["cluster_network_transmit_drop_rate"] = "sum(increase(cpds_node_network_transmit_drop_total[1m])) / sum(increase(cpds_node_network_transmit_packets_total[1m]))"
 		exprMap["cluster_network_transmit_error_rate"] = "sum(increase(cpds_node_network_transmit_errors_total[1m])) / sum(increase(cpds_node_network_transmit_packets_total[1m]))"
 		exprMap["cluster_retransm_rate"]="sum(increase(cpds_node_netstat_tcp_retrans_segs[1m])) / sum(increase(cpds_node_netstat_tcp_out_segs[1m]))"
-		exprMap["cluster_network_receive_iops"]="sum(rate(cpds_node_network_receive_packets_total{interface=~\"enp.*|eth[0-9]+\"}[10s]))"
-		exprMap["cluster_network_transmit_iops"]="sum(rate(cpds_node_network_transmit_packets_total{interface=~\"enp.*|eth[0-9]+\"}[10s]))"
+		exprMap["cluster_network_receive_iops"]="sum(cpds_node_network_info{mask=~\".+\"}*0+on(interface,instance) group_right rate(cpds_node_network_receive_packets_total{interface!~\"lo|bond[0-9]|cbr[0-9]|veth.*|vir.*|docker.*|vnet.*|br.*|tap.*|tunl.*\"}[1m]))"
+		exprMap["cluster_network_transmit_iops"]="sum(cpds_node_network_info{mask=~\".+\"}*0+on(interface,instance) group_right rate(cpds_node_network_transmit_packets_total{interface!~\"lo|bond[0-9]|cbr[0-9]|veth.*|vir.*|docker.*|vnet.*|br.*|tap.*|tunl.*\"}[1m]))"
 		exprMap["cluster_disk_read_bytes"] = "sum((label_replace(cpds_node_blk_total_bytes{type=\"disk\"}, \"device\", \"$1\", \"name\", \"(.+)\")*0)+ on(device,instance) group_right rate(cpds_node_disk_read_bytes_total[1m]))"
 		return exprMap
 	}()
@@ -320,17 +323,11 @@ func (o *operator) GetClusterResource(startTime time.Time, endTime time.Time, st
 func (o *operator) GetClusterContainerStatus(startTime time.Time, endTime time.Time, step time.Duration) ([]prometheus.Metric, error) {
 	exprMap := func() map[string]string {
 		exprMap := make(map[string]string)
-		exprMap["cluster_container_running"] = "sum (cpds_container_state{state=\"running\"})"
-		exprMap["cluster_container_not_running"] = "sum (cpds_container_state{state!=\"running\"})"
 		exprMap["cluster_container_cpu_usage"] = "sum(rate(cpds_container_cpu_usage_seconds_total[1m]))/sum (rate(cpds_node_cpu_seconds_total{cpu!=\"cpu\"}[1m]))"
 		exprMap["cluster_container_memory_usage"] = "sum(cpds_container_memory_usage_bytes) / sum(cpds_node_memory_total_bytes)"
 		exprMap["cluster_container_recive_bytes"] = "sum(cpds_container_network_receive_bytes_total{interface!~\"lo|bond[0-9]|cbr[0-9]|veth.*|vir.*|docker.*|vnet.*|br.*|tap.*\",network_mode!~\"host|container.*|none\"})"
 		exprMap["cluster_container_write_bytes"] = "sum(cpds_container_network_transmit_bytes_total{interface!~\"lo|bond[0-9]|cbr[0-9]|veth.*|vir.*|docker.*|vnet.*|br.*|tap.*\",network_mode!~\"host|container.*|none\"})"
 		exprMap["cluster_container_disk_usage"] = "sum(cpds_container_disk_usage_bytes)/((sum(cpds_node_fs_usage_bytes{fs=~\"/.*\"})+sum(cpds_node_fs_available_bytes{fs=~\"/.*\"})))"
-		exprMap["cluster_container_network_recive_drop_rate"] = "sum(increase(cpds_container_network_receive_drop_total[1m])) / sum(increase(cpds_container_network_receive_packets_total[1m]) or vector(1))"
-		exprMap["cluster_container_network_transmit_drop_rate"] = "sum(increase(cpds_container_network_transmit_drop_total[1m])) / sum(increase(cpds_container_network_transmit_packets_total[1m]) or vector(1))"
-		exprMap["cluster_container_network_recive_error_rate"] = "sum(increase(cpds_container_network_receive_errors_total[1m])) / sum(increase(cpds_container_network_transmit_packets_total[1m]) or vector(1))"
-		exprMap["cluster_container_network_transmit_error_rate"] = "sum(increase(cpds_container_network_transmit_errors_total[1m])) / sum(increase(cpds_container_network_transmit_packets_total[1m]) or vector(1))"
 		return exprMap
 	}()
 
