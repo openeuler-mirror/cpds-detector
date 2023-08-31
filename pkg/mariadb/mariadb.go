@@ -62,7 +62,10 @@ func (d *MariaDB) Connect() (*gorm.DB, error) {
 	}
 	
 	db.Set("gorm:table_options", "CHARSET=utf8mb4")
-
+	if err := db.Exec("CREATE DATABASE IF NOT EXISTS cpds").Error; err != nil {
+		return nil,err
+	}
+	db = db.Exec("USE cpds")
 	sqlDB, err := db.DB()
 	if err != nil {
 		return nil, err

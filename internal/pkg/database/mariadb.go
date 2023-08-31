@@ -33,10 +33,6 @@ func New(db *gorm.DB) Database {
 }
 
 func (m *mariadb) Init() error {
-	if err := m.db.Exec("CREATE DATABASE IF NOT EXISTS cpds").Error; err != nil {
-		return err
-	}
-	m.db = m.db.Exec("USE cpds")
 	ruleTableExists := m.db.Migrator().HasTable(&core.Rule{})
 	if !ruleTableExists {
 		if err := m.db.AutoMigrate(&core.Rule{}); err != nil {
