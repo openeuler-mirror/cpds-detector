@@ -180,7 +180,6 @@ func insertRecord(id uint, name, kind string, metric *prometheus.Metric) error {
 	}
 
 	db := r.db.Session(&gorm.Session{}).Model(&Analysis{})
-	db = db.Exec("USE cpds")
 	result := db.Where("rule_id = ?", id).Order("update_time DESC").Limit(1).Find(&existingRecord)
 	if result.Error != nil && !errors.Is(result.Error, gorm.ErrRecordNotFound) {
 		return result.Error
